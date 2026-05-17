@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReviseIQ — AQA Biology Revision</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+      colors: {
+        bg:    '#09090b',
+        card:  '#18181b',
+        border:'#27272a',
+        muted: '#3f3f46',
+      }
+    }
+  }
+}
+</script>
+<style>
+* { box-sizing: border-box; }
+body { background:#09090b; color:#fafafa; font-family:'Inter',sans-serif; margin:0; }
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:#09090b; }
+::-webkit-scrollbar-thumb { background:#3f3f46; border-radius:3px; }
+.page { display:none; }
+.page.active { display:block; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; color:#a1a1aa; transition:all .15s; }
+.nav-item:hover { color:#fafafa; background:rgba(255,255,255,.05); }
+.nav-item.active { color:#818cf8; background:rgba(99,102,241,.1); }
+.nav-item svg { width:16px; height:16px; flex-shrink:0; }
+.card { background:#18181b; border:1px solid #27272a; border-radius:12px; }
+.badge { display:inline-flex; align-items:center; font-size:10px; font-weight:600; padding:2px 8px; border-radius:999px; border-width:1px; }
+.btn { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:8px 16px; border-radius:8px; cursor:pointer; transition:all .15s; border:none; }
+.btn-primary { background:#6366f1; color:#fff; }
+.btn-primary:hover { background:#818cf8; }
+.btn-ghost { background:transparent; color:#a1a1aa; border:1px solid #27272a; }
+.btn-ghost:hover { color:#fafafa; border-color:#52525b; }
+.progress-bar { height:8px; background:#27272a; border-radius:999px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:999px; transition:width .4s; }
+.tab-btn { font-size:11px; font-weight:500; padding:7px 16px; border-radius:6px; cursor:pointer; color:#71717a; border:none; background:transparent; transition:all .15s; }
+.tab-btn.active { background:#18181b; color:#fafafa; box-shadow:0 1px 3px rgba(0,0,0,.3); }
+.tab-bar { background:rgba(39,39,42,.5); padding:4px; border-radius:8px; display:inline-flex; }
+.dish-row { display:flex; justify-content:space-between; align-items:baseline; padding:14px 0; border-bottom:1px solid #27272a; gap:16px; }
+.dish-row:last-child { border-bottom:none; }
+input[type=search] { background:#18181b; border:1px solid #27272a; border-radius:8px; padding:8px 12px 8px 36px; font-size:13px; color:#fafafa; outline:none; width:100%; transition:border .15s; }
+input[type=search]:focus { border-color:#6366f1; }
+input[type=search]::placeholder { color:#52525b; }
+.topic-card { cursor:pointer; transition:border-color .15s; }
+.topic-card:hover { border-color:#52525b; }
+.subtopics { display:none; }
+.subtopics.open { display:block; }
+.quiz-opt { width:100%; display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; border:1px solid #27272a; background:rgba(39,39,42,.3); color:#d4d4d8; font-size:14px; cursor:pointer; text-align:left; transition:all .15s; }
+.quiz-opt:hover:not(:disabled) { border-color:#52525b; background:#27272a; }
+.quiz-opt.correct { border-color:#22c55e; background:rgba(34,197,94,.07); color:#86efac; }
+.quiz-opt.wrong   { border-color:#ef4444; background:rgba(239,68,68,.07); color:#fca5a5; }
+.quiz-opt.dimmed  { opacity:.4; }
+.quiz-opt:disabled { cursor:default; }
+.opt-key { width:28px; height:28px; border-radius:6px; border:1px solid currentColor; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; }
+.heatmap-grid { display:grid; grid-template-columns:repeat(18,1fr); gap:3px; }
+.hm-cell { aspect-ratio:1; border-radius:3px; }
+.filter-btn { font-size:11px; font-weight:500; padding:6px 14px; border-radius:8px; border:1px solid #27272a; color:#71717a; background:transparent; cursor:pointer; transition:all .15s; }
+.filter-btn.active, .filter-btn:hover { border-color:#6366f1; color:#818cf8; background:rgba(99,102,241,.08); }
+.league-pill { display:inline-flex; align-items:center; font-size:10px; font-weight:700; padding:2px 10px; border-radius:999px; border:1px solid; }
+.avatar-opt { aspect-ratio:1; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:26px; cursor:pointer; border:2px solid transparent; transition:all .15s; }
+.avatar-opt:hover { transform:scale(1.08); }
+.avatar-opt.selected { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.25); }
+.xp-pop { position:fixed; top:88px; right:32px; z-index:999; background:#6366f1; color:#fff; font-size:13px; font-weight:700; padding:8px 16px; border-radius:999px; animation:popIn .4s ease, fadeOut .4s 1s forwards; pointer-events:none; }
+@keyframes popIn { from { transform:scale(.6) translateY(10px); opacity:0; } to { transform:scale(1) translateY(0); opacity:1; } }
+@keyframes fadeOut { to { opacity:0; transform:translateY(-8px); } }
+</style>
+</head>
+<body>
+
+<!-- ═══ LAYOUT ═══ -->
+<div style="display:flex; min-height:100vh;">
+
+  <!-- Sidebar -->
+  <aside style="width:240px; flex-shrink:0; background:#0f0f12; border-right:1px solid #27272a; position:fixed; top:0; left:0; height:100vh; display:flex; flex-direction:column; z-index:40;">
+    <!-- Logo -->
+    <div style="display:flex; align-items:center; gap:10px; padding:0 20px; height:60px; border-bottom:1px solid #27272a;">
+      <div style="width:28px;height:28px;background:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:15px;height:15px;"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+      </div>
+      <span style="font-size:15px;font-weight:700;color:#fafafa;letter-spacing:-.3px;">ReviseIQ</span>
+    </div>
+
+    <!-- Nav -->
+    <nav style="flex:1; padding:12px; overflow-y:auto;">
+      <p style="font-size:9px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.12em;padding:0 12px;margin-bottom:8px;">Navigation</p>
+      <div class="nav-item active" onclick="navigate('dashboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="navigate('biology',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        Biology
+      </div>
+      <div class="nav-item" onclick="navigate('quiz',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        Quiz
+      </div>
+      <div class="nav-item" onclick="navigate('papers',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Past Papers
+      </div>
+      <div class="nav-item" onclick="navigate('notes',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        Notes
+      </div>
+      <div class="nav-item" onclick="navigate('leaderboard',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Leaderboard
+      </div>
+      <div class="nav-item" onclick="navigate('profile',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </div>
+    </nav>
+
+    <!-- Premium -->
+    <div style="padding:12px; border-top:1px solid #27272a;">
+      <div style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:12px;">
+        <p style="font-size:11px;font-weight:700;color:#a5b4fc;margin-bottom:4px;">Go Premium</p>
+        <p style="font-size:11px;color:#71717a;line-height:1.5;margin-bottom:10px;">Remove ads &amp; unlock unlimited quizzes</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:13px;font-weight:700;color:#fafafa;">£3.99/mo</span>
+          <button class="btn btn-primary" style="padding:5px 12px;font-size:11px;">Upgrade</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main wrapper -->
+  <div style="margin-left:240px; flex:1; display:flex; flex-direction:column;">
+
+    <!-- Top bar -->
+    <header style="height:60px;background:rgba(9,9,11,.95);backdrop-filter:blur(8px);border-bottom:1px solid #27272a;position:sticky;top:0;z-index:30;display:flex;align-items:center;padding:0 24px;gap:16px;">
+      <div style="position:relative;flex:1;max-width:360px;">
+        <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:#52525b;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Search topics, questions..." />
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:6px;background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.2);border-radius:999px;padding:5px 12px;">
+          <svg style="width:13px;height:13px;color:#fb923c;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c0 6-6 8-6 13a6 6 0 0012 0c0-5-6-7-6-13z"/></svg>
+          <span style="font-size:11px;font-weight:700;color:#fb923c;">14 days</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:999px;padding:5px 12px;">
+          <svg style="width:13px;height:13px;color:#818cf8;" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span style="font-size:11px;font-weight:700;color:#818cf8;">4,820 XP</span>
+        </div>
+        <div style="width:34px;height:34px;border-radius:999px;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;" onclick="navigate('profile',null)">AC</div>
+      </div>
+    </header>
+
+    <!-- Content area -->
+    <div style="display:flex;flex:1;gap:0;">
+      <main style="flex:1;min-width:0;padding:28px 28px 28px 28px;overflow-y:auto;">
+
+        <!-- ═══ DASHBOARD ═══ -->
+        <div id="page-dashboard" class="page active">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+            <div>
+              <h1 style="font-size:22px;font-weight:700;color:#fafafa;margin:0 0 4px;">Good afternoon, Alex 👋</h1>
+              <p style="font-size:13px;color:#71717a;margin:0;">You're on a 14-day streak. Keep it going.</p>
+            </div>
+            <button class="btn btn-primary" onclick="navigate('quiz',null)">
+              <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Quick Quiz
+            </button>
+          </div>
+
+          <!-- Stat cards -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+            <div class="card" style="padding:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:11px;color:#71717a;font-weight:500;">Current Streak</span>
+                <svg style="width:15px;height:15px;color:#fb923c;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c0 6-6 8-6 13a6 6 0 0012 0c0-5-6-7-6-13z"/></svg>
+              </div>
+              <p style="font-size:24px;font-weight:700;color:#fafafa;margin:0;">14 days</p>
+            </div>
+            <div class="card" style="padding:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:11px;color:#71717a;font-weight:500;">Total XP</span>
+                <svg style="width:15px;height:15px;color:#818cf8;" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <p style="font-size:24px;font-weight:700;color:#fafafa;margin:0;">4,820</p>
+            </div>
+            <div class="card" style="padding:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:11px;color:#71717a;font-weight:500;">Accuracy</span>
+                <svg style="width:15px;height:15px;color:#34d399;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>
+              </div>
+              <p style="font-size:24px;font-weight:700;color:#fafafa;margin:0;">73%</p>
+            </div>
+            <div class="card" style="padding:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span style="font-size:11px;color:#71717a;font-weight:500;">Global Rank</span>
+                <svg style="width:15px;height:15px;color:#facc15;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              </div>
+              <p style="font-size:24px;font-weight:700;color:#fafafa;margin:0;">#3</p>
+            </div>
+          </div>
+
+          <!-- XP bar + Exam countdown -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+            <div class="card" style="padding:20px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+                <span style="font-size:13px;font-weight:600;color:#e4e4e7;">Daily XP Goal</span>
+                <span style="font-size:12px;color:#71717a;">320 / 500 XP</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:64%;background:#6366f1;"></div></div>
+              <p style="font-size:11px;color:#52525b;margin-top:8px;">180 XP to hit today's goal</p>
+            </div>
+            <div class="card" style="padding:20px;display:flex;align-items:center;gap:16px;">
+              <div style="width:52px;height:52px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg style="width:22px;height:22px;color:#f87171;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div>
+                <p style="font-size:11px;color:#71717a;margin:0 0 4px;">Next Exam</p>
+                <p style="font-size:13px;font-weight:600;color:#e4e4e7;margin:0 0 4px;">AQA Biology Paper 1</p>
+                <p style="font-size:22px;font-weight:700;color:#f87171;margin:0;">47 <span style="font-size:12px;font-weight:400;color:#71717a;">days away</span></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Continue + Weak topics -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+            <div class="card" style="padding:20px;">
+              <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 16px;">Continue Studying</p>
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div style="width:40px;height:40px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg style="width:18px;height:18px;color:#818cf8;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <p style="font-size:13px;font-weight:600;color:#e4e4e7;margin:0 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Genetic Information</p>
+                  <div class="progress-bar" style="height:6px;"><div class="progress-fill" style="width:55%;background:#6366f1;"></div></div>
+                  <p style="font-size:11px;color:#71717a;margin:5px 0 0;">55% mastery</p>
+                </div>
+                <button class="btn btn-primary" style="padding:6px 12px;font-size:11px;flex-shrink:0;" onclick="navigate('quiz',null)">Resume</button>
+              </div>
+            </div>
+            <div class="card" style="padding:20px;">
+              <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;">Needs Attention</p>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#d4d4d8;">Gene Expression</span><span style="font-size:12px;color:#f87171;">42%</span></div>
+                    <div class="progress-bar" style="height:5px;"><div class="progress-fill" style="width:42%;background:#ef4444;"></div></div>
+                  </div>
+                  <span style="font-size:11px;color:#818cf8;cursor:pointer;flex-shrink:0;" onclick="navigate('quiz',null)">Practice</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#d4d4d8;">Respiration</span><span style="font-size:12px;color:#f87171;">51%</span></div>
+                    <div class="progress-bar" style="height:5px;"><div class="progress-fill" style="width:51%;background:#ef4444;"></div></div>
+                  </div>
+                  <span style="font-size:11px;color:#818cf8;cursor:pointer;flex-shrink:0;" onclick="navigate('quiz',null)">Practice</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="flex:1;min-width:0;">
+                    <div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span style="font-size:12px;color:#d4d4d8;">Hormonal Comms.</span><span style="font-size:12px;color:#fb923c;">58%</span></div>
+                    <div class="progress-bar" style="height:5px;"><div class="progress-fill" style="width:58%;background:#f97316;"></div></div>
+                  </div>
+                  <span style="font-size:11px;color:#818cf8;cursor:pointer;flex-shrink:0;" onclick="navigate('quiz',null)">Practice</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Heatmap -->
+          <div class="card" style="padding:20px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+              <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0;">Revision Activity — 18 Weeks</p>
+              <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#52525b;">
+                Less
+                <div style="width:10px;height:10px;border-radius:2px;background:#27272a;"></div>
+                <div style="width:10px;height:10px;border-radius:2px;background:rgba(99,102,241,.3);"></div>
+                <div style="width:10px;height:10px;border-radius:2px;background:rgba(99,102,241,.6);"></div>
+                <div style="width:10px;height:10px;border-radius:2px;background:#6366f1;"></div>
+                <div style="width:10px;height:10px;border-radius:2px;background:#818cf8;"></div>
+                More
+              </div>
+            </div>
+            <div class="heatmap-grid" id="heatmap"></div>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="card" style="padding:20px;">
+            <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 16px;">Recent Activity</p>
+            <div>
+              <div class="dish-row"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;height:32px;background:rgba(34,197,94,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#4ade80;">9/10</div><div><p style="font-size:13px;font-weight:500;color:#e4e4e7;margin:0;">Biological Molecules</p><p style="font-size:11px;color:#71717a;margin:0;">Today, 2:30 PM</p></div></div><span style="font-size:12px;font-weight:700;color:#818cf8;">+95 XP</span></div>
+              <div class="dish-row"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;height:32px;background:rgba(34,197,94,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#4ade80;">7/10</div><div><p style="font-size:13px;font-weight:500;color:#e4e4e7;margin:0;">Cell Division</p><p style="font-size:11px;color:#71717a;margin:0;">Today, 11:15 AM</p></div></div><span style="font-size:12px;font-weight:700;color:#818cf8;">+65 XP</span></div>
+              <div class="dish-row"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;height:32px;background:rgba(239,68,68,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#f87171;">4/10</div><div><p style="font-size:13px;font-weight:500;color:#e4e4e7;margin:0;">Gene Expression</p><p style="font-size:11px;color:#71717a;margin:0;">Yesterday, 6:45 PM</p></div></div><span style="font-size:12px;font-weight:700;color:#818cf8;">+30 XP</span></div>
+              <div class="dish-row"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;height:32px;background:rgba(239,68,68,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#f87171;">5/10</div><div><p style="font-size:13px;font-weight:500;color:#e4e4e7;margin:0;">Respiration</p><p style="font-size:11px;color:#71717a;margin:0;">Yesterday, 4:20 PM</p></div></div><span style="font-size:12px;font-weight:700;color:#818cf8;">+40 XP</span></div>
+              <div class="dish-row" style="border:none;"><div style="display:flex;align-items:center;gap:12px;"><div style="width:32px;height:32px;background:rgba(34,197,94,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#4ade80;">8/10</div><div><p style="font-size:13px;font-weight:500;color:#e4e4e7;margin:0;">Inheritance</p><p style="font-size:11px;color:#71717a;margin:0;">2 days ago, 7:00 PM</p></div></div><span style="font-size:12px;font-weight:700;color:#818cf8;">+80 XP</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ BIOLOGY ═══ -->
+        <div id="page-biology" class="page">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:22px;font-weight:700;color:#fafafa;margin:0 0 4px;">AQA A-Level Biology</h1>
+            <p style="font-size:13px;color:#71717a;margin:0;">All 8 modules — Year 1 &amp; Year 2</p>
+          </div>
+          <div class="card" style="padding:20px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div><p style="font-size:13px;font-weight:600;color:#e4e4e7;margin:0 0 2px;">Overall Progress</p><p style="font-size:11px;color:#71717a;margin:0;">3 of 8 topics mastered</p></div>
+              <p style="font-size:28px;font-weight:700;color:#fafafa;margin:0;">69%</p>
+            </div>
+            <div class="progress-bar" style="height:10px;"><div class="progress-fill" style="width:69%;background:#6366f1;"></div></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:20px;">
+            <button class="filter-btn active" onclick="filterTopics('all',this)">All Topics</button>
+            <button class="filter-btn" onclick="filterTopics('inProgress',this)">In Progress</button>
+            <button class="filter-btn" onclick="filterTopics('mastered',this)">Mastered</button>
+            <button class="filter-btn" onclick="filterTopics('weak',this)">Needs Work</button>
+          </div>
+          <div id="topics-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;"></div>
+        </div>
+
+        <!-- ═══ QUIZ ═══ -->
+        <div id="page-quiz" class="page">
+          <div id="quiz-container" style="max-width:680px;"></div>
+        </div>
+
+        <!-- ═══ PAST PAPERS ═══ -->
+        <div id="page-papers" class="page">
+          <div style="margin-bottom:24px;">
+            <h1 style="font-size:22px;font-weight:700;color:#fafafa;margin:0 0 4px;">Past Papers</h1>
+            <p style="font-size:13px;color:#71717a;margin:0;">AQA Biology — all question papers and mark schemes</p>
+          </div>
+          <div class="card" style="padding:14px 18px;margin-bottom:20px;border-color:rgba(99,102,241,.2);background:rgba(99,102,241,.05);display:flex;align-items:center;gap:10px;">
+            <svg style="width:15px;height:15px;color:#818cf8;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p style="font-size:12px;color:#a5b4fc;margin:0;">Papers open on the AQA website. You may need a free AQA account to download PDFs.</p>
+          </div>
+          <div class="tab-bar" style="margin-bottom:20px;">
+            <button class="tab-btn active" onclick="switchPaperTab('a2',this)">A-Level (A2)</button>
+            <button class="tab-btn" onclick="switchPaperTab('as',this)">AS Level</button>
+          </div>
+          <div id="papers-content"></div>
+        </div>
+
+        <!-- ═══ NOTES ═══ -->
+        <div id="page-notes" class="page">
+          <div style="display:flex;gap:24px;height:calc(100vh - 120px);">
+            <aside style="width:200px;flex-shrink:0;overflow-y:auto;">
+              <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px;">Topics</p>
+              <div id="notes-nav"></div>
+            </aside>
+            <div style="flex:1;overflow-y:auto;" id="notes-content"></div>
+          </div>
+        </div>
+
+        <!-- ═══ LEADERBOARD ═══ -->
+        <div id="page-leaderboard" class="page">
+          <div style="max-width:720px;">
+            <div style="margin-bottom:24px;">
+              <h1 style="font-size:22px;font-weight:700;color:#fafafa;margin:0 0 4px;">Leaderboard</h1>
+              <p style="font-size:13px;color:#71717a;margin:0;">Resets weekly — keep climbing</p>
+            </div>
+            <!-- League tiers -->
+            <div class="card" style="padding:20px;margin-bottom:20px;">
+              <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;">League Tiers</p>
+              <div style="display:flex;align-items:center;gap:0;overflow-x:auto;">
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(205,127,50,.15);border:2px solid #cd7f32;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">🥉</div><p style="font-size:10px;font-weight:700;color:#cd7f32;margin:0;">Bronze</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">0+</p></div>
+                <div style="width:24px;height:1px;background:#27272a;flex-shrink:0;"></div>
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(156,163,175,.15);border:2px solid #9ca3af;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">🥈</div><p style="font-size:10px;font-weight:700;color:#9ca3af;margin:0;">Silver</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">1,000+</p></div>
+                <div style="width:24px;height:1px;background:#27272a;flex-shrink:0;"></div>
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(245,158,11,.15);border:2px solid #f59e0b;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">🥇</div><p style="font-size:10px;font-weight:700;color:#f59e0b;margin:0;">Gold</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">3,000+</p></div>
+                <div style="width:24px;height:1px;background:#27272a;flex-shrink:0;"></div>
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(167,139,250,.15);border:2px solid #a78bfa;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">💎</div><p style="font-size:10px;font-weight:700;color:#a78bfa;margin:0;">Platinum</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">6,000+</p></div>
+                <div style="width:24px;height:1px;background:#27272a;flex-shrink:0;"></div>
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(34,211,238,.15);border:2px solid #22d3ee;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">🎓</div><p style="font-size:10px;font-weight:700;color:#22d3ee;margin:0;">Scholar</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">10,000+</p></div>
+                <div style="width:24px;height:1px;background:#27272a;flex-shrink:0;"></div>
+                <div style="text-align:center;padding:0 16px;"><div style="width:32px;height:32px;border-radius:50%;background:rgba(249,115,22,.15);border:2px solid #f97316;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:14px;">⚡</div><p style="font-size:10px;font-weight:700;color:#f97316;margin:0;">Legend</p><p style="font-size:9px;color:#52525b;margin:3px 0 0;">20,000+</p></div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12px;color:#71717a;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite;"></div>
+              Weekly reset in <strong style="color:#e4e4e7;">163h</strong>
+            </div>
+            <div class="tab-bar" style="margin-bottom:20px;">
+              <button class="tab-btn active" onclick="switchLbTab('global',this)">Global</button>
+              <button class="tab-btn" onclick="switchLbTab('school',this)">My School</button>
+              <button class="tab-btn" onclick="switchLbTab('friends',this)">Friends</button>
+            </div>
+            <div id="leaderboard-content"></div>
+          </div>
+        </div>
+
+        <!-- ═══ PROFILE ═══ -->
+        <div id="page-profile" class="page">
+          <div style="max-width:760px;" id="profile-content"></div>
+        </div>
+
+      </main>
+
+      <!-- Ad sidebar -->
+      <aside style="width:176px;flex-shrink:0;padding:28px 20px 28px 0;display:flex;flex-direction:column;gap:14px;">
+        <div class="card" style="overflow:hidden;">
+          <div style="padding:6px 12px;background:rgba(39,39,42,.5);"><span style="font-size:9px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;">Sponsored</span></div>
+          <div style="padding:12px;">
+            <div style="height:72px;background:linear-gradient(135deg,rgba(29,78,216,.4),rgba(30,64,175,.3));border:1px solid rgba(59,130,246,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:28px;">🎓</div>
+            <p style="font-size:11px;font-weight:700;color:#e4e4e7;margin:0 0 4px;">Uni Compare</p>
+            <p style="font-size:10px;color:#71717a;line-height:1.5;margin:0 0 8px;">Find your perfect university match</p>
+            <a href="https://www.ucas.com" target="_blank" style="font-size:10px;font-weight:600;color:#818cf8;text-decoration:none;">Explore now →</a>
+          </div>
+        </div>
+        <div class="card" style="overflow:hidden;">
+          <div style="padding:6px 12px;background:rgba(39,39,42,.5);"><span style="font-size:9px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;">Sponsored</span></div>
+          <div style="padding:12px;">
+            <div style="height:72px;background:linear-gradient(135deg,rgba(6,78,59,.4),rgba(4,47,46,.3));border:1px solid rgba(16,185,129,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;font-size:28px;">📚</div>
+            <p style="font-size:11px;font-weight:700;color:#e4e4e7;margin:0 0 4px;">CGP Books</p>
+            <p style="font-size:10px;color:#71717a;line-height:1.5;margin:0 0 8px;">AQA Biology revision guides</p>
+            <a href="https://www.cgpbooks.co.uk" target="_blank" style="font-size:10px;font-weight:600;color:#818cf8;text-decoration:none;">Shop now →</a>
+          </div>
+        </div>
+        <div style="border:1px solid rgba(99,102,241,.25);background:linear-gradient(160deg,rgba(99,102,241,.08),rgba(99,102,241,.03));border-radius:12px;padding:14px;">
+          <p style="font-size:11px;font-weight:700;color:#a5b4fc;margin:0 0 8px;">✨ Go Premium</p>
+          <ul style="margin:0 0 12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;">
+            <li style="font-size:10px;color:#71717a;">• Remove all ads</li>
+            <li style="font-size:10px;color:#71717a;">• Unlimited quizzes</li>
+            <li style="font-size:10px;color:#71717a;">• Full notes access</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:7px;font-size:11px;">£3.99/month</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const TOPICS = [
+  { id:1, name:"Biological Molecules", mastery:94, difficulty:"Medium", hours:1, color:"#22c55e", subtopics:["Carbohydrates","Lipids","Proteins","Nucleic Acids","Water","Inorganic Ions"], masteries:[96,91,95,88,99,93] },
+  { id:2, name:"Cells", mastery:89, difficulty:"Easy", hours:2, color:"#22c55e", subtopics:["Cell Structure","Cell Division","Transport Across Membranes"], masteries:[92,88,85] },
+  { id:3, name:"Organisms Exchange Substances", mastery:71, difficulty:"Medium", hours:5, color:"#eab308", subtopics:["Gas Exchange","Digestion","Mass Transport"], masteries:[74,71,68] },
+  { id:4, name:"Genetic Information", mastery:55, difficulty:"Hard", hours:8, color:"#ef4444", subtopics:["DNA Structure","Genetic Code","Transcription","Translation","Gene Expression","Mutations"], masteries:[65,60,58,54,42,50] },
+  { id:5, name:"Energy Transfers", mastery:57, difficulty:"Hard", hours:7, color:"#ef4444", subtopics:["Photosynthesis","Respiration"], masteries:[62,51] },
+  { id:6, name:"Organisms Respond to Changes", mastery:66, difficulty:"Hard", hours:6, color:"#f97316", subtopics:["Nervous System","Hormonal Communication","Plant Responses","Animal Behaviour"], masteries:[72,58,63,69] },
+  { id:7, name:"Genetics, Populations, Evolution", mastery:77, difficulty:"Medium", hours:4, color:"#eab308", subtopics:["Inheritance","Populations","Evolution","Speciation"], masteries:[83,78,75,72] },
+  { id:8, name:"The Control of Gene Expression", mastery:45, difficulty:"Hard", hours:9, color:"#ef4444", subtopics:["Gene Expression Mechanisms","Recombinant DNA","Genome Projects"], masteries:[45,38,52] },
+];
+
+const QUESTIONS = [
+  { q:"Which of the following correctly describes the structure of ATP?", opts:["Adenine + deoxyribose + 2 phosphate groups","Adenine + ribose + 3 phosphate groups","Guanine + ribose + 3 phosphate groups","Adenine + ribose + 2 phosphate groups"], ans:1, exp:"ATP (adenosine triphosphate) consists of adenine, the pentose sugar ribose, and three phosphate groups. It is a ribonucleotide — ribose, not deoxyribose.", keywords:["adenine","ribose","three phosphate groups","adenosine triphosphate"], topic:"Biological Molecules", xp:10 },
+  { q:"What is the role of helicase in DNA replication?", opts:["Joins Okazaki fragments on the lagging strand","Adds complementary nucleotides to the template strand","Unwinds the double helix by breaking hydrogen bonds","Synthesises a short RNA primer"], ans:2, exp:"Helicase breaks hydrogen bonds between base pairs, separating the two DNA strands to create a replication fork.", keywords:["helicase","hydrogen bonds","double helix","replication fork"], topic:"Genetic Information", xp:10 },
+  { q:"During the Calvin cycle, what molecule accepts CO₂?", opts:["GP (glycerate-3-phosphate)","NADPH","RuBP (ribulose bisphosphate)","G3P (glyceraldehyde-3-phosphate)"], ans:2, exp:"RuBP is the 5-carbon CO₂ acceptor. RuBisCO catalyses carboxylation of RuBP with CO₂ to form an unstable 6-carbon compound that splits into two molecules of GP.", keywords:["RuBP","Calvin cycle","RuBisCO","CO₂ fixation"], topic:"Energy Transfers", xp:10 },
+  { q:"Which bond maintains the secondary structure of proteins?", opts:["Disulfide bonds between cysteine residues","Ionic bonds between R groups","Hydrogen bonds between peptide bonds along the backbone","Van der Waals forces between hydrophobic R groups"], ans:2, exp:"Secondary structure (alpha helices and beta pleated sheets) is held by hydrogen bonds between the NH and C=O groups of the peptide backbone — not R groups.", keywords:["hydrogen bonds","alpha helix","beta pleated sheet","peptide bond"], topic:"Biological Molecules", xp:10 },
+  { q:"What is the net ATP yield from complete aerobic respiration of one glucose?", opts:["2 ATP","36–38 ATP","10 ATP","4 ATP"], ans:1, exp:"Complete aerobic oxidation yields ~36–38 ATP: glycolysis (net 2), link reaction (0 direct), Krebs cycle (2), and oxidative phosphorylation (~32–34) via NADH and FADH₂.", keywords:["ATP yield","glycolysis","Krebs cycle","oxidative phosphorylation"], topic:"Energy Transfers", xp:10 },
+  { q:"In Hardy-Weinberg, if p = 0.7, what is q²?", opts:["0.09","0.49","0.30","0.42"], ans:0, exp:"q = 1 − 0.7 = 0.3, so q² = 0.09 (9%). Hardy-Weinberg assumes no mutation, selection, random mating, no drift, no gene flow.", keywords:["Hardy-Weinberg","allele frequency","q²","homozygous recessive"], topic:"Genetics, Populations, Evolution", xp:10 },
+];
+
+const LEADERBOARD = {
+  global:[
+    { rank:1, name:"Sarah K.", school:"Manchester Grammar", xp:8450, league:"Platinum", change:0 },
+    { rank:2, name:"James W.", school:"Bolton School", xp:7890, league:"Platinum", change:1 },
+    { rank:3, name:"Alex Chen", school:"Altrincham Grammar", xp:4820, league:"Gold", change:3, me:true },
+    { rank:4, name:"Priya S.", school:"Cheadle Hulme", xp:4610, league:"Gold", change:-1 },
+    { rank:5, name:"Tom H.", school:"King Edward VII", xp:4250, league:"Gold", change:2 },
+    { rank:6, name:"Aisha M.", school:"Withington Girls", xp:3870, league:"Gold", change:-2 },
+    { rank:7, name:"Ethan B.", school:"Stockport Grammar", xp:3440, league:"Silver", change:1 },
+    { rank:8, name:"Chloe R.", school:"Altrincham Grammar", xp:3190, league:"Silver", change:0 },
+    { rank:9, name:"Marcus T.", school:"Sale Grammar", xp:2860, league:"Silver", change:-3 },
+    { rank:10, name:"Lily F.", school:"Loreto College", xp:2540, league:"Silver", change:4 },
+  ],
+  school:[
+    { rank:1, name:"Alex Chen", school:"Altrincham Grammar", xp:4820, league:"Gold", change:1, me:true },
+    { rank:2, name:"Chloe R.", school:"Altrincham Grammar", xp:3190, league:"Silver", change:0 },
+    { rank:3, name:"Niamh O.", school:"Altrincham Grammar", xp:2940, league:"Silver", change:2 },
+    { rank:4, name:"Ben C.", school:"Altrincham Grammar", xp:2100, league:"Silver", change:-1 },
+    { rank:5, name:"Freya J.", school:"Altrincham Grammar", xp:1760, league:"Bronze", change:3 },
+  ],
+  friends:[
+    { rank:1, name:"James W.", school:"Bolton School", xp:7890, league:"Platinum", change:1 },
+    { rank:2, name:"Alex Chen", school:"Altrincham Grammar", xp:4820, league:"Gold", change:1, me:true },
+    { rank:3, name:"Chloe R.", school:"Altrincham Grammar", xp:3190, league:"Silver", change:0 },
+  ],
+};
+
+const LEAGUE_COLORS = { Bronze:"#cd7f32", Silver:"#9ca3af", Gold:"#f59e0b", Platinum:"#a78bfa", Scholar:"#22d3ee", Legend:"#f97316" };
+
+const PAPERS_A2 = [2023,2022,2019,2018,2017].map(y=>({ year:y, isNew:y===2023, paperSets:[1,2,3].map(n=>({ n, url:"https://www.aqa.org.uk/subjects/biology/a-level/biology-7402/assessment-resources" })) }));
+const PAPERS_AS = [2023,2022,2019,2018,2017].map(y=>({ year:y, isNew:y===2023, paperSets:[1,2].map(n=>({ n, url:"https://www.aqa.org.uk/subjects/biology/as/biology-7401/assessment-resources" })) }));
+
+const AVATARS = ["🦁","🐯","🦊","🐺","🦅","🐉","🦋","🐬","🦉","🐻‍❄️","🦄","🐲","🦈","🐙","🦚","🐦‍🔥","🧠","⚗️","🔭","🎯"];
+const AVATAR_BG = ["rgba(234,179,8,.15)","rgba(249,115,22,.15)","rgba(251,146,60,.15)","rgba(113,113,122,.15)","rgba(59,130,246,.15)","rgba(16,185,129,.15)","rgba(168,85,247,.15)","rgba(6,182,212,.15)","rgba(99,102,241,.15)","rgba(14,165,233,.15)","rgba(236,72,153,.15)","rgba(34,197,94,.15)","rgba(29,78,216,.15)","rgba(239,68,68,.15)","rgba(20,184,166,.15)","rgba(220,38,38,.15)","rgba(219,39,119,.15)","rgba(99,102,241,.2)","rgba(30,64,175,.15)","rgba(248,113,113,.15)"];
+
+// ── STATE ──────────────────────────────────────────────────────────────
+let currentPage = 'dashboard';
+let topicFilter = 'all';
+let paperTab = 'a2';
+let lbTab = 'global';
+let quizState = { current:0, selected:null, phase:'question', timer:90, interval:null, totalXP:0, correct:0, confidence:null };
+let selectedAvatar = 8;
+let notesSelected = { topic:0, sub:0 };
+let openTopics = new Set();
+
+// ── NAVIGATION ────────────────────────────────────────────────────────
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    const items = document.querySelectorAll('.nav-item');
+    items.forEach(item => { if(item.getAttribute('onclick') && item.getAttribute('onclick').includes("'"+page+"'")) item.classList.add('active'); });
+  }
+  currentPage = page;
+  if (page === 'biology') renderTopics();
+  if (page === 'quiz') initQuiz();
+  if (page === 'papers') renderPapers();
+  if (page === 'leaderboard') renderLeaderboard();
+  if (page === 'profile') renderProfile();
+  if (page === 'notes') renderNotes();
+}
+
+// ── HEATMAP ───────────────────────────────────────────────────────────
+function buildHeatmap() {
+  const grid = document.getElementById('heatmap');
+  const levels = ['#27272a','rgba(99,102,241,.25)','rgba(99,102,241,.5)','#6366f1','#818cf8'];
+  for(let w=0;w<18;w++) for(let d=0;d<7;d++) {
+    const r=Math.random(), recent=w>14;
+    let v = r<(recent?.4:.6) ? 0 : Math.floor(Math.random()*4)+1;
+    const cell = document.createElement('div');
+    cell.className='hm-cell';
+    cell.style.background=levels[Math.min(v,4)];
+    grid.appendChild(cell);
+  }
+}
+
+// ── TOPICS ────────────────────────────────────────────────────────────
+function diffBadge(d) {
+  const cls = { Easy:'color:#4ade80;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25)', Medium:'color:#facc15;background:rgba(234,179,8,.1);border-color:rgba(234,179,8,.25)', Hard:'color:#f87171;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.25)' };
+  return `<span class="badge" style="${cls[d]}">${d}</span>`;
+}
+function masteryBar(m, h='8px') {
+  const c = m>=80?'#22c55e':m>=60?'#eab308':m>=40?'#f97316':'#ef4444';
+  return `<div class="progress-bar" style="height:${h};"><div class="progress-fill" style="width:${m}%;background:${c};"></div></div>`;
+}
+function renderTopics() {
+  const grid = document.getElementById('topics-grid');
+  const show = TOPICS.filter(t=> topicFilter==='all'||( topicFilter==='mastered'&&t.mastery>=80)||(topicFilter==='inProgress'&&t.mastery>=40&&t.mastery<80)||(topicFilter==='weak'&&t.mastery<40));
+  grid.innerHTML = show.map(t=>`
+    <div class="card topic-card" id="tc-${t.id}" style="overflow:hidden;" onclick="toggleTopic(${t.id})">
+      <div style="padding:18px;">
+        <div style="display:flex;align-items:start;justify-content:space-between;gap:10px;margin-bottom:14px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">${diffBadge(t.difficulty)}</div>
+            <h3 style="font-size:13px;font-weight:700;color:#fafafa;margin:0;">${t.name}</h3>
+            <p style="font-size:11px;color:#71717a;margin:3px 0 0;">${t.subtopics.length} subtopics</p>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <p style="font-size:22px;font-weight:700;color:#fafafa;margin:0;">${t.mastery}%</p>
+            <p style="font-size:10px;color:#71717a;margin:2px 0 0;">mastery</p>
+          </div>
+        </div>
+        ${masteryBar(t.mastery)}
+        <div style="display:flex;gap:14px;margin-top:10px;">
+          <span style="font-size:11px;color:#71717a;">⏱ ~${t.hours}h left</span>
+          <span style="font-size:11px;color:#71717a;">${t.mastery>=80?'✅ Mastered':t.mastery>=40?'📖 In Progress':'🔴 Not Started'}</span>
+        </div>
+      </div>
+      <div class="subtopics" id="sub-${t.id}" style="border-top:1px solid #27272a;padding:14px 18px;">
+        ${t.subtopics.map((s,i)=>`
+          <div style="margin-bottom:10px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:12px;color:#d4d4d8;">${s}</span>
+              <span style="font-size:12px;color:#a1a1aa;">${t.masteries[i]}%</span>
+            </div>
+            ${masteryBar(t.masteries[i],'5px')}
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+  openTopics.forEach(id=>{ const el=document.getElementById('sub-'+id); if(el) el.classList.add('open'); });
+}
+function toggleTopic(id) {
+  const el = document.getElementById('sub-'+id);
+  if(!el) return;
+  el.classList.toggle('open');
+  openTopics.has(id)?openTopics.delete(id):openTopics.add(id);
+}
+function filterTopics(f, btn) {
+  topicFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTopics();
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────────
+function initQuiz() {
+  quizState = { current:0, selected:null, phase:'question', timer:90, interval:null, totalXP:0, correct:0, confidence:null };
+  renderQuiz();
+}
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  const qs = quizState;
+  if(qs.phase === 'done') {
+    const acc = Math.round((qs.correct/QUESTIONS.length)*100);
+    c.innerHTML = `<div class="card" style="padding:40px;text-align:center;max-width:540px;margin:0 auto;">
+      <div style="width:64px;height:64px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;">⚡</div>
+      <h2 style="font-size:22px;font-weight:700;color:#fafafa;margin:0 0 6px;">Quiz Complete!</h2>
+      <p style="color:#71717a;margin:0 0 28px;">Here's how you did</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;">
+        <div style="background:rgba(39,39,42,.5);border:1px solid #27272a;border-radius:10px;padding:16px;"><p style="font-size:22px;font-weight:700;color:#fafafa;margin:0;">${qs.correct}/${QUESTIONS.length}</p><p style="font-size:11px;color:#71717a;margin:4px 0 0;">Correct</p></div>
+        <div style="background:rgba(39,39,42,.5);border:1px solid #27272a;border-radius:10px;padding:16px;"><p style="font-size:22px;font-weight:700;color:#818cf8;margin:0;">+${qs.totalXP}</p><p style="font-size:11px;color:#71717a;margin:4px 0 0;">XP Earned</p></div>
+        <div style="background:rgba(39,39,42,.5);border:1px solid #27272a;border-radius:10px;padding:16px;"><p style="font-size:22px;font-weight:700;color:${acc>=70?'#4ade80':'#f87171'};margin:0;">${acc}%</p><p style="font-size:11px;color:#71717a;margin:4px 0 0;">Accuracy</p></div>
+      </div>
+      <button class="btn btn-primary" style="padding:12px 32px;" onclick="initQuiz()">Try Again</button>
+    </div>`;
+    return;
+  }
+  const q = QUESTIONS[qs.current];
+  const pct = (qs.current/QUESTIONS.length)*100;
+  clearInterval(qs.interval);
+  if(qs.phase==='question') {
+    qs.interval = setInterval(()=>{
+      qs.timer--;
+      const el=document.getElementById('quiz-timer');
+      if(el) { el.textContent=qs.timer+'s'; el.style.color=qs.timer<=15?'#f87171':'#a1a1aa'; }
+      if(qs.timer<=0) { clearInterval(qs.interval); selectAnswer(-1); }
+    },1000);
+  }
+  c.innerHTML = `
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+      <div class="progress-bar" style="flex:1;height:6px;"><div class="progress-fill" style="width:${pct}%;background:#6366f1;"></div></div>
+      <span id="quiz-timer" style="font-size:12px;font-weight:600;color:#a1a1aa;">${qs.timer}s</span>
+      <span style="font-size:11px;font-weight:700;color:#818cf8;background:rgba(99,102,241,.1);padding:4px 10px;border-radius:999px;border:1px solid rgba(99,102,241,.2);">+${qs.totalXP} XP</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+      <p style="font-size:11px;color:#71717a;margin:0;">Question ${qs.current+1} of ${QUESTIONS.length}</p>
+      <span style="font-size:9px;font-weight:700;color:#71717a;border:1px solid #27272a;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.1em;">${q.topic}</span>
+    </div>
+    <div class="card" style="padding:24px;margin-bottom:16px;">
+      <p style="font-size:15px;font-weight:500;color:#fafafa;line-height:1.6;margin:0 0 20px;">${q.q}</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${q.opts.map((o,i)=>`<button class="quiz-opt" id="opt-${i}" onclick="selectAnswer(${i})" ${qs.phase!=='question'?'disabled':''}>${
+          qs.phase==='feedback' ? (i===q.ans ? `<span class="opt-key">✓</span>` : (i===qs.selected ? `<span class="opt-key">✗</span>` : `<span class="opt-key" style="opacity:.4;">${'ABCD'[i]}</span>`)) : `<span class="opt-key">${'ABCD'[i]}</span>`
+        }<span>${o}</span></button>`).join('')}
+      </div>
+    </div>
+    ${qs.phase==='feedback'?renderFeedback(q):''}`;
+
+  if(qs.phase==='feedback') {
+    const correct = qs.selected===q.ans;
+    q.opts.forEach((_,i)=>{
+      const el=document.getElementById('opt-'+i);
+      if(!el) return;
+      if(i===q.ans) el.classList.add('correct');
+      else if(i===qs.selected) el.classList.add('wrong');
+      else el.classList.add('dimmed');
+    });
+  }
+}
+function renderFeedback(q) {
+  const qs = quizState;
+  const correct = qs.selected===q.ans;
+  return `<div style="border:1px solid ${correct?'rgba(34,197,94,.3)':'rgba(239,68,68,.3)'};background:${correct?'rgba(34,197,94,.04)':'rgba(239,68,68,.04)'};border-radius:12px;padding:20px;margin-bottom:0;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:18px;">${correct?'✅':'❌'}</span>
+      <strong style="font-size:13px;color:${correct?'#4ade80':'#f87171'};">${correct?'Correct!':'Not quite.'}</strong>
+    </div>
+    <p style="font-size:13px;color:#d4d4d8;line-height:1.6;margin:0 0 14px;">${q.exp}</p>
+    <div style="margin-bottom:16px;">
+      <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px;">Key Terms</p>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">${q.keywords.map(k=>`<span style="font-size:11px;background:rgba(234,179,8,.08);color:#fde68a;border:1px solid rgba(234,179,8,.2);padding:2px 10px;border-radius:4px;">${k}</span>`).join('')}</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px;">How confident were you?</p>
+      <div style="display:flex;gap:8px;">
+        ${['Not sure','Quite sure','Very sure'].map((l,i)=>`<button onclick="setConfidence(${i})" id="conf-${i}" style="font-size:11px;font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid ${qs.confidence===i?'#6366f1':'#27272a'};background:${qs.confidence===i?'rgba(99,102,241,.15)':'transparent'};color:${qs.confidence===i?'#818cf8':'#71717a'};cursor:pointer;">${l}</button>`).join('')}
+      </div>
+    </div>
+    <button class="btn btn-primary" style="padding:10px 24px;" onclick="nextQuestion()">${qs.current+1>=QUESTIONS.length?'See Results':'Next Question →'}</button>
+  </div>`;
+}
+function selectAnswer(i) {
+  if(quizState.phase!=='question') return;
+  clearInterval(quizState.interval);
+  quizState.selected = i;
+  quizState.phase = 'feedback';
+  const q = QUESTIONS[quizState.current];
+  if(i===q.ans) {
+    quizState.correct++;
+    quizState.totalXP += q.xp;
+    showXPPop(q.xp);
+  }
+  renderQuiz();
+}
+function setConfidence(i) {
+  quizState.confidence = i;
+  ['conf-0','conf-1','conf-2'].forEach((id,j)=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.borderColor = j===i?'#6366f1':'#27272a';
+    el.style.background  = j===i?'rgba(99,102,241,.15)':'transparent';
+    el.style.color       = j===i?'#818cf8':'#71717a';
+  });
+}
+function nextQuestion() {
+  quizState.confidence = null;
+  if(quizState.current+1>=QUESTIONS.length) { quizState.phase='done'; renderQuiz(); return; }
+  quizState.current++;
+  quizState.selected = null;
+  quizState.phase = 'question';
+  quizState.timer = 90;
+  renderQuiz();
+}
+function showXPPop(xp) {
+  const el=document.createElement('div');
+  el.className='xp-pop';
+  el.textContent=`+${xp} XP ⚡`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1500);
+}
+
+// ── PAPERS ────────────────────────────────────────────────────────────
+function renderPapers() {
+  const c = document.getElementById('papers-content');
+  const data = paperTab==='a2' ? PAPERS_A2 : PAPERS_AS;
+  const url  = paperTab==='a2' ? 'https://www.aqa.org.uk/subjects/biology/a-level/biology-7402/assessment-resources' : 'https://www.aqa.org.uk/subjects/biology/as/biology-7401/assessment-resources';
+  c.innerHTML = data.map(y=>`
+    <div class="card" style="overflow:hidden;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid #27272a;">
+        <strong style="font-size:13px;color:#fafafa;">${y.year}</strong>
+        ${y.isNew?'<span class="badge" style="color:#4ade80;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.25);">NEW</span>':''}
+      </div>
+      ${y.paperSets.map(ps=>`
+        <div style="display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid #1f1f22;">
+          <span style="font-size:11px;font-weight:600;color:#71717a;width:60px;flex-shrink:0;">Paper ${ps.n}</span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <a href="${url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;border:1px solid rgba(59,130,246,.3);background:rgba(59,130,246,.06);color:#93c5fd;text-decoration:none;transition:all .15s;">📄 Paper ${ps.n} QP ↗</a>
+            <a href="${url}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:5px 12px;border-radius:8px;border:1px solid #27272a;background:rgba(39,39,42,.4);color:#d4d4d8;text-decoration:none;transition:all .15s;">📋 Paper ${ps.n} MS ↗</a>
+          </div>
+        </div>`).join('')}
+    </div>`).join('')
+  + `<p style="font-size:11px;color:#52525b;text-align:center;padding:12px 0;">2020 &amp; 2021 papers unavailable due to COVID exam cancellations.</p>`;
+}
+function switchPaperTab(tab, btn) {
+  paperTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=> { if(b.closest('#page-papers')) b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderPapers();
+}
+
+// ── LEADERBOARD ───────────────────────────────────────────────────────
+function leaguePill(league) {
+  const c = LEAGUE_COLORS[league]||'#71717a';
+  return `<span class="league-pill" style="color:${c};border-color:${c}33;background:${c}18;">${league}</span>`;
+}
+function renderLeaderboard() {
+  const data = LEADERBOARD[lbTab];
+  const top3 = data.slice(0,3);
+  const medals = ['🥇','🥈','🥉'];
+  const c = document.getElementById('leaderboard-content');
+  c.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+      ${top3.map((e,i)=>`
+        <div class="card" style="padding:20px;text-align:center;${e.me?'border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.05)':''}">
+          <p style="font-size:26px;margin:0 0 8px;">${medals[i]}</p>
+          <div style="width:40px;height:40px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;margin:0 auto 8px;">${e.name.split(' ').map(n=>n[0]).join('')}</div>
+          <p style="font-size:12px;font-weight:700;color:#fafafa;margin:0;">${e.name}${e.me?' <span style="font-size:10px;color:#818cf8;">(you)</span>':''}</p>
+          <p style="font-size:10px;color:#71717a;margin:2px 0 8px;">${e.school}</p>
+          <p style="font-size:16px;font-weight:700;color:#818cf8;margin:0 0 6px;">${e.xp.toLocaleString()} XP</p>
+          ${leaguePill(e.league)}
+        </div>`).join('')}
+    </div>
+    <div class="card" style="overflow:hidden;">
+      ${data.map(e=>`
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid #27272a;${e.me?'background:rgba(99,102,241,.05);border-left:3px solid #6366f1;':''}" class="${e.me?'':'hover:bg-white/5'}">
+          <span style="font-size:13px;font-weight:700;color:${e.rank===1?'#facc15':e.rank===2?'#9ca3af':e.rank===3?'#cd7f32':'#71717a'};width:24px;">#${e.rank}</span>
+          <div style="width:32px;height:32px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">${e.name.split(' ').map(n=>n[0]).join('')}</div>
+          <div style="flex:1;min-width:0;">
+            <p style="font-size:13px;font-weight:500;color:${e.me?'#a5b4fc':'#e4e4e7'};margin:0;">${e.name}${e.me?' <span style="font-size:10px;color:#818cf8;">(you)</span>':''}</p>
+            <p style="font-size:11px;color:#71717a;margin:0;">${e.school}</p>
+          </div>
+          ${leaguePill(e.league)}
+          <span style="font-size:11px;font-weight:600;color:${e.change>0?'#4ade80':e.change<0?'#f87171':'#71717a'};">${e.change>0?'↑'+e.change:e.change<0?'↓'+Math.abs(e.change):'—'}</span>
+          <span style="font-size:13px;font-weight:700;color:#fafafa;width:80px;text-align:right;">${e.xp.toLocaleString()} <span style="font-size:10px;color:#71717a;font-weight:400;">XP</span></span>
+        </div>`).join('')}
+    </div>`;
+}
+function switchLbTab(tab, btn) {
+  lbTab = tab;
+  document.querySelectorAll('#page-leaderboard .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeaderboard();
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────────
+function renderProfile() {
+  const c = document.getElementById('profile-content');
+  const av = AVATARS[selectedAvatar];
+  const bg = AVATAR_BG[selectedAvatar];
+  const achievements = [
+    { name:"First Quiz", desc:"Completed your first quiz", icon:"⭐", earned:true, date:"Sep 2024" },
+    { name:"7-Day Streak", desc:"Studied 7 days in a row", icon:"🔥", earned:true, date:"Oct 2024" },
+    { name:"Topic Master", desc:"Achieved 90%+ on a topic", icon:"🏆", earned:true, date:"Nov 2024" },
+    { name:"Century", desc:"Answered 100 questions", icon:"⚡", earned:true, date:"Oct 2024" },
+    { name:"14-Day Streak", desc:"Studied 14 days in a row", icon:"🔥", earned:true, date:"May 2026" },
+    { name:"Perfectionist", desc:"Score 100% on a quiz", icon:"✅", earned:true, date:"Dec 2024" },
+    { name:"Night Owl", desc:"Study after midnight", icon:"🌙", earned:false },
+    { name:"Scholar", desc:"Reach Platinum league", icon:"🎓", earned:false },
+  ];
+  const stats = [
+    { label:"Total XP", val:"4,820", color:"#818cf8" },
+    { label:"Questions", val:"847", color:"#4ade80" },
+    { label:"Accuracy", val:"73%", color:"#60a5fa" },
+    { label:"Study Hours", val:"48h", color:"#c084fc" },
+    { label:"Streak", val:"14 days", color:"#fb923c" },
+    { label:"Best Streak", val:"21 days", color:"#facc15" },
+  ];
+  c.innerHTML = `
+    <!-- Header -->
+    <div class="card" style="padding:24px;margin-bottom:16px;display:flex;align-items:center;gap:20px;">
+      <div style="position:relative;flex-shrink:0;">
+        <div style="width:64px;height:64px;border-radius:50%;background:${bg};border:2px solid rgba(99,102,241,.4);display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;" onclick="openAvatarPicker()">${av}</div>
+        <div style="position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;background:#6366f1;border-radius:50%;border:2px solid #18181b;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;" onclick="openAvatarPicker()">✏</div>
+      </div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px;">
+          <h1 style="font-size:20px;font-weight:700;color:#fafafa;margin:0;">Alex Chen</h1>
+          <span class="league-pill" style="color:#f59e0b;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.12);">Gold</span>
+        </div>
+        <p style="font-size:13px;color:#71717a;margin:0 0 8px;">Year 13 · Altrincham Grammar · Member since Sep 2024</p>
+        <div style="display:flex;align-items:center;gap:8px;max-width:200px;">
+          <span style="font-size:11px;color:#71717a;">Lvl 12</span>
+          <div class="progress-bar" style="flex:1;height:5px;"><div class="progress-fill" style="width:64%;background:#6366f1;"></div></div>
+          <span style="font-size:11px;color:#71717a;">Lvl 13</span>
+        </div>
+      </div>
+      <button class="btn btn-ghost" onclick="openAvatarPicker()">Customise Avatar</button>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+      ${stats.map(s=>`<div class="card" style="padding:16px;"><p style="font-size:20px;font-weight:700;color:${s.color};margin:0 0 4px;">${s.val}</p><p style="font-size:11px;color:#71717a;margin:0;">${s.label}</p></div>`).join('')}
+    </div>
+
+    <!-- Topic mastery -->
+    <div class="card" style="padding:20px;margin-bottom:16px;">
+      <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 16px;">Topic Mastery</p>
+      ${[...TOPICS].sort((a,b)=>b.mastery-a.mastery).map(t=>`
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <span style="font-size:12px;color:#a1a1aa;width:200px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.name}</span>
+          <div class="progress-bar" style="flex:1;height:6px;">${masteryBar(t.mastery,'6px').match(/<div[^>]*>/)[0]}${''.padEnd(0)}</div>
+          ${masteryBar(t.mastery,'6px')}
+          <span style="font-size:11px;color:#71717a;width:30px;text-align:right;">${t.mastery}%</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- Achievements -->
+    <div class="card" style="padding:20px;margin-bottom:16px;">
+      <p style="font-size:10px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px;">Achievements</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+        ${achievements.map(a=>`
+          <div style="border:1px solid ${a.earned?'rgba(99,102,241,.2)':'#27272a'};background:${a.earned?'rgba(99,102,241,.05)':'rgba(39,39,42,.3)'};border-radius:10px;padding:14px;text-align:center;${a.earned?'':'opacity:.45;'}">
+            <div style="width:32px;height:32px;border-radius:8px;background:${a.earned?'rgba(99,102,241,.15)':'#27272a'};display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:16px;">${a.earned?a.icon:'🔒'}</div>
+            <p style="font-size:11px;font-weight:700;color:#e4e4e7;margin:0 0 3px;">${a.name}</p>
+            <p style="font-size:10px;color:#71717a;margin:0;line-height:1.4;">${a.desc}</p>
+            ${a.earned&&a.date?`<p style="font-size:9px;color:#818cf8;margin:6px 0 0;">${a.date}</p>`:''}
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Avatar picker modal -->
+    <div id="avatar-modal" style="display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;">
+      <div class="card" style="padding:24px;width:380px;max-width:95vw;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h3 style="font-size:15px;font-weight:700;color:#fafafa;margin:0;">Choose your avatar</h3>
+          <button onclick="closeAvatarPicker()" style="background:none;border:none;color:#71717a;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;">
+          ${AVATARS.map((av,i)=>`<button class="avatar-opt ${i===selectedAvatar?'selected':''}" id="av-${i}" style="background:${AVATAR_BG[i]};" onclick="pickAvatar(${i})">${av}</button>`).join('')}
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px;" onclick="saveAvatar()">Save</button>
+      </div>
+    </div>`;
+
+  // Fix the topic mastery bars (was duplicating)
+  document.querySelectorAll('#profile-content .progress-bar').forEach(pb=>{
+    const fills = pb.querySelectorAll('.progress-fill');
+    if(fills.length>1) for(let i=1;i<fills.length;i++) fills[i].remove();
+  });
+}
+function openAvatarPicker() {
+  const m = document.getElementById('avatar-modal');
+  if(m) { m.style.display='flex'; }
+}
+function closeAvatarPicker() {
+  const m = document.getElementById('avatar-modal');
+  if(m) m.style.display='none';
+}
+function pickAvatar(i) {
+  selectedAvatar = i;
+  document.querySelectorAll('.avatar-opt').forEach((el,j)=>{ el.classList.toggle('selected', j===i); });
+}
+function saveAvatar() {
+  closeAvatarPicker();
+  renderProfile();
+}
+function masteryBar(m,h='8px') {
+  const c=m>=80?'#22c55e':m>=60?'#eab308':m>=40?'#f97316':'#ef4444';
+  return `<div class="progress-bar" style="flex:1;height:${h};"><div class="progress-fill" style="width:${m}%;background:${c};"></div></div>`;
+}
+
+// ── NOTES ─────────────────────────────────────────────────────────────
+const NOTES_DATA = {
+  0: { // Biological Molecules
+    0: { // Carbohydrates
+      title:"Carbohydrates",
+      sections:[
+        { h:"Monosaccharides", body:"The simplest carbohydrates. Include glucose (C₆H₁₂O₆), fructose, and galactose. Glucose exists as α-glucose and β-glucose, differing in the position of the —OH group on carbon 1. This structural difference has profound effects on the polymers they form.", terms:["monosaccharide","α-glucose","β-glucose","hexose sugar","C₆H₁₂O₆"] },
+        { h:"Disaccharides", body:"Formed by a condensation reaction between two monosaccharides, releasing water and forming a glycosidic bond. Examples: maltose (glucose + glucose), sucrose (glucose + fructose), lactose (glucose + galactose). Hydrolysis (adding water) breaks the glycosidic bond.", terms:["condensation reaction","glycosidic bond","hydrolysis","maltose","sucrose","lactose"] },
+        { h:"Polysaccharides", body:"Long chains of monosaccharides joined by glycosidic bonds. Starch (amylose + amylopectin) is the storage polysaccharide in plants. Glycogen is the animal equivalent — highly branched for rapid hydrolysis. Cellulose, made of β-glucose, forms straight chains linked by hydrogen bonds into microfibrils for structural support in plant cell walls.", terms:["starch","glycogen","cellulose","amylose","amylopectin","microfibrils","hydrogen bonds"] },
+      ]
+    },
+    1: { // Lipids
+      title:"Lipids",
+      sections:[
+        { h:"Triglycerides", body:"Formed from one glycerol and three fatty acid molecules via ester bonds (condensation reactions). Saturated fatty acids have no C=C double bonds; unsaturated have one or more. Functions: energy storage (twice the energy per gram vs carbohydrates), insulation, buoyancy, protection of organs.", terms:["triglyceride","glycerol","fatty acid","ester bond","saturated","unsaturated"] },
+        { h:"Phospholipids", body:"Similar to triglycerides but one fatty acid is replaced by a phosphate group. The phosphate head is hydrophilic (water-attracting); the two fatty acid tails are hydrophobic (water-repelling). This amphipathic nature causes spontaneous bilayer formation in water — the structural basis of all cell membranes.", terms:["phospholipid","hydrophilic","hydrophobic","bilayer","amphipathic","cell membrane"] },
+      ]
+    },
+  }
+};
+
+function renderNotes() {
+  const nav = document.getElementById('notes-nav');
+  nav.innerHTML = TOPICS.map((t,ti)=>`
+    <div>
+      <button onclick="selectNotesTopic(${ti})" style="width:100%;text-align:left;padding:7px 10px;border-radius:8px;font-size:12px;font-weight:600;background:${notesSelected.topic===ti?'rgba(99,102,241,.1)':'transparent'};color:${notesSelected.topic===ti?'#818cf8':'#a1a1aa'};border:none;cursor:pointer;">${ti+1}. ${t.name}</button>
+      ${notesSelected.topic===ti?`<div style="margin-left:10px;">${t.subtopics.map((s,si)=>`
+        <button onclick="selectNotesSub(${si})" style="display:block;width:100%;text-align:left;padding:5px 10px;border-radius:6px;font-size:11px;background:${notesSelected.sub===si?'rgba(39,39,42,.6)':'transparent'};color:${notesSelected.sub===si?'#fafafa':'#71717a'};border:none;cursor:pointer;">${s}</button>`).join('')}
+      </div>`:''}
+    </div>`).join('');
+  renderNotesContent();
+}
+function selectNotesTopic(ti) { notesSelected={topic:ti,sub:0}; renderNotes(); }
+function selectNotesSub(si) { notesSelected.sub=si; renderNotes(); }
+function renderNotesContent() {
+  const c = document.getElementById('notes-content');
+  const td = NOTES_DATA[notesSelected.topic];
+  const sub = TOPICS[notesSelected.topic].subtopics[notesSelected.sub];
+  const data = td ? td[notesSelected.sub] : null;
+  if(!data) {
+    c.innerHTML=`<div class="card" style="padding:48px;text-align:center;"><p style="font-size:32px;margin:0 0 16px;">🔒</p><p style="font-size:14px;font-weight:600;color:#a1a1aa;margin:0 0 8px;">Notes coming soon</p><p style="font-size:12px;color:#71717a;max-width:300px;margin:0 auto;">We're writing comprehensive spec-aligned notes for ${sub}. Check back soon.</p></div>`;
+    return;
+  }
+  c.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+      <span style="font-size:18px;">📖</span>
+      <h1 style="font-size:18px;font-weight:700;color:#fafafa;margin:0;">${data.title}</h1>
+      <span style="font-size:12px;color:#71717a;">· ${TOPICS[notesSelected.topic].name}</span>
+    </div>
+    ${data.sections.map(s=>`
+      <div class="card" style="padding:20px;margin-bottom:14px;">
+        <h2 style="font-size:14px;font-weight:700;color:#e4e4e7;margin:0 0 10px;">${s.h}</h2>
+        <p style="font-size:13px;color:#d4d4d8;line-height:1.7;margin:0 0 14px;">${s.body}</p>
+        <div>
+          <p style="font-size:9px;font-weight:700;color:#52525b;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px;">Key Terms</p>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">${s.terms.map(t=>`<span style="font-size:11px;background:rgba(99,102,241,.08);color:#a5b4fc;border:1px solid rgba(99,102,241,.2);padding:2px 10px;border-radius:4px;">${t}</span>`).join('')}</div>
+        </div>
+      </div>`).join('')}
+    <div style="border:1px dashed #27272a;border-radius:10px;padding:28px;text-align:center;margin-top:4px;">
+      <p style="font-size:12px;color:#52525b;margin:0;">More sections coming soon — we're writing them now</p>
+    </div>`;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+buildHeatmap();
+renderPapers();
+renderLeaderboard();
+</script>
+</body>
+</html>
