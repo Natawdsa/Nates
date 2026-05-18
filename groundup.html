@@ -4,1364 +4,804 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ground Up — Coffee & Community, Rye</title>
-  <meta name="description" content="Rye's favourite independent coffee shop and community hub. Specialty coffee, locally sourced food, and a warm welcome every time." />
+  <meta name="description" content="Rye's independent coffee shop and community hub. Specialty coffee, great people, 86 Fishmarket Road." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
   <style>
-    /* ─── Reset & Base ─── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
+    html { scroll-behavior: smooth; }
 
     :root {
-      --cream:       #F7F2E9;
-      --cream-deep:  #EDE5D4;
-      --olive:       #4D5C40;
-      --olive-light: #6B7C5A;
-      --olive-dark:  #3A4530;
-      --espresso:    #1E1108;
-      --espresso-mid:#2E1E0F;
-      --brown:       #7A4D2A;
-      --gold:        #C9A96E;
-      --gold-light:  #E2C99A;
-      --text-dark:   #1E1108;
-      --text-mid:    #5C4A38;
-      --text-light:  #A8947C;
+      --c:   #F4EDD8;   /* cream */
+      --cw:  #EDE0C4;   /* cream warm */
+      --ol:  #3D4A30;   /* olive */
+      --olm: #526242;   /* olive mid */
+      --olp: #8A9478;   /* olive pale */
+      --esp: #16100A;   /* espresso */
+      --brn: #2A1A0C;   /* brown */
+      --gld: #AA8040;   /* gold */
+      --tx:  #18100A;   /* text dark */
+      --txm: #5C4638;   /* text mid */
+      --txf: #9C8A78;   /* text faint */
     }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: var(--cream);
-      color: var(--text-dark);
+      background: var(--c);
+      color: var(--tx);
       overflow-x: hidden;
     }
 
-    h1, h2, h3, h4 {
-      font-family: 'Playfair Display', serif;
-      line-height: 1.15;
-    }
-
-    /* ─── Grain texture overlay ─── */
+    /* ─── Noise grain ─── */
     .grain::after {
       content: '';
       position: absolute;
       inset: 0;
       pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.06'/%3E%3C/svg%3E");
-      background-size: 256px 256px;
-      opacity: 0.45;
-      mix-blend-mode: overlay;
       z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 300px;
+      opacity: 0.55;
+      mix-blend-mode: overlay;
     }
 
-    /* ─── Scroll reveal ─── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-left {
-      opacity: 0;
-      transform: translateX(-32px);
-      transition: opacity 0.75s ease, transform 0.75s ease;
-    }
-    .reveal-left.visible {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    .reveal-scale {
-      opacity: 0;
-      transform: scale(0.94);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .reveal-scale.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .reveal, .reveal-left, .reveal-scale {
-        opacity: 1; transform: none; transition: none;
-      }
-    }
+    /* ─── Reveal ─── */
+    .rv { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .rv.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .rv { opacity:1; transform:none; transition:none; } }
 
     /* ─── NAV ─── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 0 2.5rem;
-      height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(30, 17, 8, 0.0);
-      transition: background 0.4s ease, backdrop-filter 0.4s ease;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 3rem;
+      transition: padding .4s, background .5s, backdrop-filter .5s;
     }
-    nav.scrolled {
-      background: rgba(30, 17, 8, 0.88);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    nav.solid {
+      padding: 1.1rem 3rem;
+      background: rgba(22,16,10,.91);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     .nav-logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1.35rem;
-      font-weight: 600;
-      color: var(--cream);
-      text-decoration: none;
-      letter-spacing: 0.01em;
+      font-size: 1.2rem; font-weight: 500; font-style: italic;
+      color: var(--c); text-decoration: none; letter-spacing: .01em;
     }
-    .nav-logo span { color: var(--gold); }
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
+    .nav-logo b { font-style: normal; font-weight: 700; }
+    .nav-r { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-r a {
+      font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(244,237,216,.5); text-decoration: none; transition: color .2s;
     }
-    .nav-links a {
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(247, 242, 233, 0.7);
-      text-decoration: none;
-      transition: color 0.2s ease;
+    .nav-r a:hover { color: var(--c); }
+    .nav-r .nav-call {
+      color: var(--gld); border-bottom: 1px solid rgba(170,128,64,.35);
+      padding-bottom: 1px; transition: border-color .2s;
     }
-    .nav-links a:hover { color: var(--gold); }
-    .nav-cta {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--espresso);
-      background: var(--gold);
-      border: none;
-      padding: 0.55rem 1.3rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .nav-r .nav-call:hover { border-color: var(--gld); }
 
     /* hamburger */
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-      background: none;
-      border: none;
-    }
-    .nav-hamburger span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--cream);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
-    .mobile-menu {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 99;
-      background: var(--espresso);
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2.5rem;
-    }
-    .mobile-menu.open { display: flex; }
-    .mobile-menu a {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--cream);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-    .mobile-menu a:hover { color: var(--gold); }
-    .mobile-close {
-      position: absolute;
-      top: 1.5rem; right: 2rem;
-      background: none;
-      border: none;
-      color: var(--cream);
-      font-size: 2rem;
-      cursor: pointer;
-    }
+    .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .ham span { display: block; width: 22px; height: 1.5px; background: var(--c); }
+    .mob { display: none; position: fixed; inset: 0; z-index: 99; background: var(--esp); flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 3rem; gap: 1.5rem; }
+    .mob.open { display: flex; }
+    .mob-close { position: absolute; top: 2rem; right: 2.5rem; background: none; border: none; color: rgba(244,237,216,.4); font-size: 1.5rem; cursor: pointer; }
+    .mob a { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 400; font-style: italic; color: var(--c); text-decoration: none; line-height: 1.1; transition: color .2s; }
+    .mob a:hover { color: var(--gld); }
 
     @media (max-width: 768px) {
-      nav { padding: 0 1.5rem; }
-      .nav-links, .nav-cta { display: none; }
-      .nav-hamburger { display: flex; }
+      nav { padding: 1.5rem 1.5rem; }
+      nav.solid { padding: 1rem 1.5rem; }
+      .nav-r { display: none; }
+      .ham { display: flex; }
     }
 
     /* ─── HERO ─── */
     #hero {
       position: relative;
-      width: 100%;
-      height: 100vh;
-      min-height: 600px;
+      min-height: 100vh;
+      background: var(--ol);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      justify-content: space-between;
       overflow: hidden;
-      background-color: var(--olive-dark);
     }
-
-    /* Layered gradient background */
-    .hero-bg {
-      position: absolute;
-      inset: 0;
+    .hero-blobs {
+      position: absolute; inset: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 80% 100%, rgba(77,92,64,0.4) 0%, transparent 60%),
-        linear-gradient(160deg, #2E3826 0%, #1E2419 40%, #1A1108 100%);
+        radial-gradient(ellipse 70% 55% at 10% 110%, rgba(22,16,10,.55) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 50% at 95% 5%, rgba(170,128,64,.13) 0%, transparent 60%);
     }
 
-    /* Subtle vignette */
-    .hero-vignette {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(10,8,4,0.55) 100%);
-      z-index: 2;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 3;
-      max-width: 860px;
-      padding: 0 2rem;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.75rem;
-    }
-    .hero-eyebrow::before,
-    .hero-eyebrow::after {
-      content: '';
-      display: block;
-      width: 32px;
-      height: 1px;
-      background: var(--gold);
-      opacity: 0.6;
-    }
-
-    .hero-title {
-      font-size: clamp(3.2rem, 9vw, 7.5rem);
-      font-weight: 500;
-      color: var(--cream);
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-      margin-bottom: 1.25rem;
-    }
-    .hero-title em {
-      font-style: italic;
-      color: var(--gold-light);
-    }
-
-    .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      font-weight: 300;
-      color: rgba(247, 242, 233, 0.65);
-      letter-spacing: 0.04em;
-      margin-bottom: 3rem;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1.25rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-primary {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--espresso);
-      background: var(--gold);
-      padding: 0.85rem 2.2rem;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.15s;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
-    .btn-ghost {
-      display: inline-block;
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cream);
-      background: transparent;
-      border: 1px solid rgba(247,242,233,0.3);
-      padding: 0.85rem 2.2rem;
-      text-decoration: none;
-      transition: border-color 0.2s, color 0.2s, transform 0.15s;
-      cursor: pointer;
-    }
-    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
-
-    /* Scroll arrow */
-    .scroll-arrow {
-      position: absolute;
-      bottom: 2.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .scroll-arrow span {
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(247,242,233,0.4);
-    }
-    .scroll-arrow svg {
-      animation: bounce 2.2s ease-in-out infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); opacity: 0.4; }
-      50% { transform: translateY(6px); opacity: 0.9; }
-    }
-
-    /* ─── SECTION SHARED ─── */
-    section {
-      position: relative;
-    }
-    .section-inner {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 2.5rem;
-    }
-    .section-label {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-bottom: 1.2rem;
-    }
-    .section-label::before {
-      content: '';
-      display: block;
-      width: 24px;
-      height: 1px;
-      background: var(--gold);
-    }
-    .divider {
-      width: 48px;
-      height: 2px;
-      background: var(--gold);
-      margin: 1.5rem 0 0;
-    }
-
-    /* ─── WELCOME ─── */
-    #welcome {
-      background: var(--cream);
-      padding: 8rem 0 7rem;
-    }
-    .welcome-grid {
+    .hero-main {
+      position: relative; z-index: 2;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: center;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      padding: 10rem 3rem 3rem;
+      align-items: flex-end;
     }
-    .welcome-left h2 {
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      font-weight: 500;
-      color: var(--text-dark);
-      margin-bottom: 1.5rem;
-      letter-spacing: -0.01em;
+    .hero-type {}
+    .hero-city {
+      font-size: .68rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(244,237,216,.35); margin-bottom: 1.8rem;
     }
-    .welcome-left h2 em {
+    h1 {
+      font-family: 'Playfair Display', serif;
+      line-height: .9; letter-spacing: -.03em;
+    }
+    .h1-a {
+      display: block;
+      font-size: clamp(5.5rem, 14vw, 13rem);
+      font-weight: 700;
+      color: var(--c);
+    }
+    .h1-b {
+      display: block;
+      font-size: clamp(2.8rem, 6.5vw, 6rem);
+      font-weight: 400;
       font-style: italic;
-      color: var(--olive);
+      color: var(--gld);
+      margin-left: .08em;
     }
-    .welcome-left p {
-      font-size: 1.1rem;
-      font-weight: 300;
-      line-height: 1.8;
-      color: var(--text-mid);
-      margin-bottom: 1.2rem;
-      max-width: 480px;
+
+    .hero-col {
+      padding-bottom: .5rem;
+      display: flex; flex-direction: column; justify-content: flex-end; gap: 1.4rem;
     }
-    .welcome-left p strong {
-      font-weight: 500;
-      color: var(--text-dark);
+    .hero-col p {
+      font-size: .97rem; font-weight: 300; line-height: 1.75;
+      color: rgba(244,237,216,.6); max-width: 340px;
     }
-    .founder-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 1rem;
+    .hero-col p em { font-style: italic; color: rgba(244,237,216,.85); }
+    .hero-link {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-size: .72rem; font-weight: 500; letter-spacing: .13em; text-transform: uppercase;
+      color: var(--gld); text-decoration: none;
+      border-bottom: 1px solid rgba(170,128,64,.35); padding-bottom: 2px;
+      transition: border-color .2s; width: fit-content;
     }
-    .founder-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--olive) 0%, var(--olive-dark) 100%);
+    .hero-link:hover { border-color: var(--gld); }
+    .hero-link svg { width: 12px; height: 12px; }
+
+    /* Ticker */
+    .ticker {
+      position: relative; z-index: 2;
+      border-top: 1px solid rgba(244,237,216,.1);
+      padding: 1.1rem 0;
+      overflow: hidden;
+    }
+    .ticker-track {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      animation: tick 28s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-track span {
+      font-size: .65rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(244,237,216,.3); padding: 0 2rem;
       flex-shrink: 0;
     }
-    .founder-avatar svg { width: 24px; height: 24px; }
-    .founder-info small {
-      display: block;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-light);
-      font-weight: 500;
+    .ticker-track span.dot { color: var(--gld); opacity: .5; padding: 0; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+    @media (max-width: 860px) {
+      .hero-main { grid-template-columns: 1fr; padding: 8rem 1.5rem 2.5rem; gap: 2rem; }
+      .hero-col p { max-width: none; }
     }
-    .founder-info strong {
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--c);
+      padding: 9rem 3rem 8rem;
+    }
+    .about-in { max-width: 1080px; margin: 0 auto; }
+    .about-kicker {
+      font-size: .65rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--txf); margin-bottom: 3.5rem; display: block;
+    }
+    .about-pull {
       font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--text-dark);
-      font-weight: 500;
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 400; font-style: italic;
+      color: var(--tx); line-height: 1.22; letter-spacing: -.01em;
+      max-width: 820px; margin-bottom: 5rem;
+    }
+    .about-pull em { font-style: normal; color: var(--ol); }
+    .about-cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--cw);
+    }
+    .about-cols p {
+      font-size: .97rem; font-weight: 300; line-height: 1.85;
+      color: var(--txm); margin-bottom: 1.1rem;
+    }
+    .about-cols p:last-child { margin-bottom: 0; }
+    .about-cols strong { font-weight: 500; color: var(--tx); }
+    .about-sig {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid rgba(0,0,0,.07);
+    }
+    .about-sig small {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--txf);
+    }
+    .about-sig strong {
+      display: block; font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-style: italic; font-weight: 400;
+      color: var(--tx); margin-top: .3rem;
+    }
+    @media (max-width: 768px) {
+      #about { padding: 6rem 1.5rem 5rem; }
+      .about-cols { grid-template-columns: 1fr; gap: 0; }
     }
 
-    /* Decorative right column */
-    .welcome-right {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    /* ─── MENU ─── */
+    #menu {
+      background: var(--esp);
+      padding: 8rem 3rem;
     }
-    .welcome-card {
-      background: var(--cream-deep);
-      padding: 2rem 1.5rem;
-      border-top: 2px solid var(--gold);
-      transition: transform 0.25s ease;
+    .menu-in { max-width: 1080px; margin: 0 auto; }
+    .menu-top {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 2rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(244,237,216,.1);
+      margin-bottom: 5rem;
     }
-    .welcome-card:hover { transform: translateY(-4px); }
-    .welcome-card:first-child {
-      grid-column: span 2;
-      background: var(--olive-dark);
-      padding: 2.5rem 2rem;
-    }
-    .welcome-card:first-child .wc-label { color: var(--gold); }
-    .welcome-card:first-child .wc-val { color: var(--cream); }
-    .welcome-card:first-child .wc-desc { color: rgba(247,242,233,0.55); }
-    .wc-label {
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-light);
-      margin-bottom: 0.4rem;
-    }
-    .wc-val {
+    .menu-top h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.9rem;
-      font-weight: 500;
-      color: var(--text-dark);
-      line-height: 1.1;
-      margin-bottom: 0.35rem;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 500; letter-spacing: -.025em; line-height: .95;
+      color: var(--c);
     }
-    .wc-desc {
-      font-size: 0.82rem;
-      color: var(--text-mid);
-      line-height: 1.5;
+    .menu-top-note {
+      font-size: .78rem; font-weight: 300;
+      color: rgba(244,237,216,.25);
+      text-align: right; max-width: 220px; line-height: 1.65;
     }
-
-    @media (max-width: 900px) {
-      .welcome-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .welcome-right { max-width: 480px; }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
+    .menu-col {}
+    .menu-cat {
+      margin-bottom: 3.5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(244,237,216,.07);
     }
-
-    /* ─── WHAT WE SERVE ─── */
-    #serve {
-      background: var(--espresso);
-      padding: 8rem 0;
-      overflow: hidden;
+    .menu-cat:last-child { border-bottom: none; margin-bottom: 0; }
+    .cat-label {
+      font-size: .6rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--gld); opacity: .8;
+      margin-bottom: 1.6rem; display: block;
     }
-    .serve-header {
-      text-align: center;
-      margin-bottom: 4.5rem;
+    .menu-item { margin-bottom: 1.8rem; }
+    .menu-item:last-child { margin-bottom: 0; }
+    .mi-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 400;
+      color: var(--c); margin-bottom: .3rem; line-height: 1.2;
     }
-    .serve-header .section-label { justify-content: center; }
-    .serve-header .section-label::before { display: none; }
-    .serve-header h2 {
-      font-size: clamp(2rem, 4vw, 3.2rem);
-      color: var(--cream);
-      font-weight: 500;
-      margin-top: 0.25rem;
-      letter-spacing: -0.01em;
+    .mi-desc {
+      font-size: .85rem; font-weight: 300; line-height: 1.6;
+      color: rgba(244,237,216,.38);
     }
-    .serve-header p {
-      font-size: 1rem;
-      color: rgba(247,242,233,0.5);
-      margin-top: 0.75rem;
-      font-weight: 300;
-      max-width: 460px;
-      margin-left: auto;
-      margin-right: auto;
-      line-height: 1.7;
+    .menu-footnote {
+      margin-top: 4rem; padding-top: 2rem;
+      border-top: 1px solid rgba(244,237,216,.07);
+      font-size: .78rem; font-weight: 300; font-style: italic;
+      color: rgba(244,237,216,.2); line-height: 1.6;
     }
-
-    .serve-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-    .serve-card {
-      background: rgba(30,17,8,0.6);
-      padding: 2.8rem 2rem 2.5rem;
-      transition: background 0.3s ease;
-      cursor: default;
-      position: relative;
-      overflow: hidden;
-    }
-    .serve-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--gold);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.35s ease;
-    }
-    .serve-card:hover { background: rgba(77,92,64,0.25); }
-    .serve-card:hover::before { transform: scaleX(1); }
-    .serve-icon {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 1.5rem;
-      color: var(--gold);
-    }
-    .serve-card h3 {
-      font-size: 1.2rem;
-      font-weight: 500;
-      color: var(--cream);
-      margin-bottom: 0.6rem;
-      letter-spacing: -0.01em;
-    }
-    .serve-card p {
-      font-size: 0.88rem;
-      color: rgba(247,242,233,0.5);
-      line-height: 1.65;
-      font-weight: 300;
-    }
-    .serve-tag {
-      display: inline-block;
-      margin-top: 1.25rem;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid rgba(201,169,110,0.3);
-      padding: 0.25rem 0.6rem;
-    }
-
-    @media (max-width: 900px) {
-      .serve-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 520px) {
-      .serve-grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      #menu { padding: 6rem 1.5rem; }
+      .menu-grid { grid-template-columns: 1fr; gap: 0; }
+      .menu-top { flex-direction: column; gap: .75rem; }
+      .menu-top-note { text-align: left; }
     }
 
     /* ─── VIBE ─── */
     #vibe {
-      background: var(--olive-dark);
-      padding: 9rem 0;
-      position: relative;
-      overflow: hidden;
+      background: var(--ol);
+      padding: 8rem 3rem;
     }
-    .vibe-accent {
-      position: absolute;
-      top: -80px; right: -80px;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(201,169,110,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .vibe-accent-2 {
-      position: absolute;
-      bottom: -60px; left: -60px;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(77,92,64,0.3) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .vibe-inner {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-    .vibe-quote {
+    .vibe-in { max-width: 1080px; margin: 0 auto; }
+    .vibe-q {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.6rem, 4vw, 2.9rem);
-      font-weight: 400;
-      font-style: italic;
-      color: var(--cream);
-      line-height: 1.45;
-      max-width: 800px;
-      margin: 0 auto 3.5rem;
-      letter-spacing: -0.01em;
+      font-size: clamp(1.85rem, 4vw, 3.4rem);
+      font-weight: 400; font-style: italic;
+      color: var(--c); line-height: 1.35; letter-spacing: -.01em;
+      max-width: 820px;
     }
-    .vibe-quote em { color: var(--gold-light); font-style: normal; }
-
-    .vibe-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
+    .vibe-q em { font-style: normal; color: rgba(244,237,216,.55); }
+    .vibe-row {
+      display: flex; flex-wrap: wrap; gap: 2rem 3.5rem;
+      margin-top: 4.5rem;
+      padding-top: 3rem;
+      border-top: 1px solid rgba(244,237,216,.12);
     }
-    .vibe-pill {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      border: 1px solid rgba(201,169,110,0.35);
-      padding: 0.65rem 1.4rem;
-      font-size: 0.82rem;
-      font-weight: 500;
-      color: rgba(247,242,233,0.8);
-      letter-spacing: 0.06em;
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-      cursor: default;
+    .vibe-tag {
+      display: flex; align-items: center; gap: .55rem;
+      font-size: .75rem; font-weight: 400; letter-spacing: .06em;
+      color: rgba(244,237,216,.45);
     }
-    .vibe-pill:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: rgba(201,169,110,0.08);
-    }
-    .vibe-pill svg { width: 16px; height: 16px; color: var(--gold); flex-shrink: 0; }
+    .vibe-tag svg { width: 13px; height: 13px; color: var(--gld); opacity: .75; flex-shrink: 0; }
+    @media (max-width: 768px) { #vibe { padding: 6rem 1.5rem; } }
 
     /* ─── EVENTS ─── */
     #events {
-      background: var(--cream);
-      padding: 8rem 0;
+      background: var(--c);
+      padding: 8rem 3rem;
     }
-    .events-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 4rem;
-      gap: 2rem;
-      flex-wrap: wrap;
+    .events-in { max-width: 1080px; margin: 0 auto; }
+    .events-kicker {
+      font-size: .65rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--txf); display: block; margin-bottom: 4rem;
     }
-    .events-header h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 500;
-      color: var(--text-dark);
-      letter-spacing: -0.01em;
-    }
-    .events-header p {
-      font-size: 0.9rem;
-      color: var(--text-light);
-      max-width: 280px;
-      text-align: right;
-      line-height: 1.6;
-    }
-
-    .events-grid {
+    .ev-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-    .event-card {
-      background: var(--cream-deep);
-      padding: 2.5rem 2rem 2.2rem;
-      border-bottom: 2px solid transparent;
-      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      grid-template-columns: 56px 1fr 180px;
+      gap: 2.5rem; align-items: start;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--cw);
+      transition: padding-left .25s ease;
       cursor: default;
-      position: relative;
-      overflow: hidden;
     }
-    .event-card::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: var(--olive-dark);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 0;
-    }
-    .event-card:hover {
-      border-color: var(--gold);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 40px rgba(30,17,8,0.12);
-    }
-    .event-card:hover::after { opacity: 1; }
-    .event-card:hover .ec-num,
-    .event-card:hover .ec-title,
-    .event-card:hover .ec-when,
-    .event-card:hover .ec-desc,
-    .event-card:hover .ec-status { color: var(--cream) !important; }
-    .event-card:hover .ec-status { color: var(--gold) !important; border-color: rgba(201,169,110,0.4) !important; }
-
-    .event-card > * { position: relative; z-index: 1; }
-    .ec-num {
+    .ev-row:last-of-type { border-bottom: 1px solid var(--cw); }
+    .ev-row:hover { padding-left: 1rem; }
+    .ev-n {
       font-family: 'Playfair Display', serif;
-      font-size: 4rem;
-      font-weight: 400;
-      color: rgba(30,17,8,0.08);
-      line-height: 1;
-      margin-bottom: -0.5rem;
-      transition: color 0.3s;
+      font-size: .85rem; font-style: italic; color: var(--txf);
+      padding-top: .4rem;
     }
-    .event-card:hover .ec-num { color: rgba(247,242,233,0.12); }
-    .ec-title {
+    .ev-name {
       font-family: 'Playfair Display', serif;
-      font-size: 1.3rem;
-      font-weight: 500;
-      color: var(--text-dark);
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.01em;
-      transition: color 0.3s;
+      font-size: 1.65rem; font-weight: 500;
+      color: var(--tx); margin-bottom: .45rem; letter-spacing: -.01em; line-height: 1.1;
     }
-    .ec-when {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.9rem;
-      transition: color 0.3s;
+    .ev-desc {
+      font-size: .9rem; font-weight: 300; line-height: 1.6;
+      color: var(--txm);
     }
-    .ec-desc {
-      font-size: 0.9rem;
-      color: var(--text-mid);
-      line-height: 1.65;
-      font-weight: 300;
-      margin-bottom: 1.5rem;
-      transition: color 0.3s;
+    .ev-meta { text-align: right; }
+    .ev-time {
+      font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--ol); white-space: nowrap; display: block;
     }
-    .ec-status {
-      display: inline-block;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-light);
-      border: 1px solid var(--cream-deep);
-      padding: 0.3rem 0.7rem;
-      transition: color 0.3s, border-color 0.3s;
+    .ev-status {
+      font-size: .7rem; font-weight: 300;
+      color: var(--txf); white-space: nowrap; display: block;
+      margin-top: .35rem; font-style: italic;
     }
-    .ec-status.active { color: var(--olive); border-color: rgba(77,92,64,0.3); }
-
-    @media (max-width: 768px) {
-      .events-grid { grid-template-columns: 1fr; }
-      .events-header p { text-align: left; }
+    @media (max-width: 680px) {
+      #events { padding: 6rem 1.5rem; }
+      .ev-row { grid-template-columns: 40px 1fr; gap: 1.5rem; }
+      .ev-meta { display: none; }
+      .ev-desc::after { content: attr(data-when); display: block; margin-top: .5rem; font-style: italic; color: var(--ol); font-size: .78rem; }
     }
 
     /* ─── FIND US ─── */
     #find {
-      background: var(--espresso-mid);
-      padding: 8rem 0;
+      background: var(--brn);
+      padding: 9rem 3rem 8rem;
     }
-    .find-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: start;
+    .find-in { max-width: 1080px; margin: 0 auto; }
+    .find-top {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8rem;
+      margin-bottom: 5rem;
     }
-    .find-left h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 500;
-      color: var(--cream);
-      letter-spacing: -0.01em;
-      margin-bottom: 0.75rem;
-    }
-    .find-left p {
-      font-size: 0.95rem;
-      color: rgba(247,242,233,0.5);
-      font-weight: 300;
-      line-height: 1.7;
-      margin-bottom: 2.5rem;
-      max-width: 380px;
-    }
-
-    .contact-items {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    .contact-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-    }
-    .contact-item-icon {
-      width: 40px;
-      height: 40px;
-      border: 1px solid rgba(201,169,110,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      color: var(--gold);
-    }
-    .contact-item-icon svg { width: 18px; height: 18px; }
-    .contact-item-text small {
-      display: block;
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.2rem;
-    }
-    .contact-item-text span {
-      font-size: 0.95rem;
-      color: rgba(247,242,233,0.8);
-      font-weight: 300;
-    }
-    .contact-item-text a {
-      font-size: 0.95rem;
-      color: rgba(247,242,233,0.8);
-      font-weight: 300;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .contact-item-text a:hover { color: var(--gold); }
-
-    /* Map placeholder */
-    .find-right {}
-    .map-block {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 3rem 2.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .map-block h3 {
+    .find-h {
       font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--cream);
-      margin-bottom: 0.5rem;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 400; line-height: 1.15; letter-spacing: -.02em;
+      color: var(--c); margin-bottom: 1.5rem;
     }
-    .map-block p {
-      font-size: 0.88rem;
-      color: rgba(247,242,233,0.45);
-      line-height: 1.6;
-      font-weight: 300;
-      margin-bottom: 1.75rem;
+    .find-sub {
+      font-size: .92rem; font-weight: 300; line-height: 1.8;
+      color: rgba(244,237,216,.4); max-width: 360px;
     }
-    /* SVG Map illustration */
-    .map-svg-wrap {
-      background: rgba(77,92,64,0.15);
-      border: 1px solid rgba(77,92,64,0.2);
-      padding: 2rem;
-      text-align: center;
+    .find-details { display: flex; flex-direction: column; }
+    .fd { padding: 1.5rem 0; border-bottom: 1px solid rgba(244,237,216,.08); }
+    .fd:first-child { border-top: 1px solid rgba(244,237,216,.08); }
+    .fd small {
+      font-size: .58rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gld); opacity: .7; display: block; margin-bottom: .35rem;
     }
+    .fd span, .fd a {
+      font-size: .93rem; font-weight: 300;
+      color: rgba(244,237,216,.65); text-decoration: none; transition: color .2s;
+    }
+    .fd a:hover { color: var(--gld); }
 
-    .hours-block {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 2rem 2.5rem;
+    /* Hours table */
+    .find-hours {
+      border-top: 1px solid rgba(244,237,216,.06);
+      padding-top: 3rem;
     }
-    .hours-block h4 {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1.25rem;
+    .fh-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-style: italic; font-weight: 400;
+      color: rgba(244,237,216,.35); margin-bottom: 2rem;
     }
-    .hours-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: rgba(247,242,233,0.65);
-      font-weight: 300;
-      padding: 0.45rem 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+    .fh-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: .9rem 0; border-bottom: 1px solid rgba(244,237,216,.05);
+      font-size: .88rem; font-weight: 300;
     }
-    .hours-row:last-child { border-bottom: none; }
-    .hours-row span:last-child { color: rgba(247,242,233,0.45); }
-
-    @media (max-width: 900px) {
-      .find-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .fh-row:last-child { border-bottom: none; }
+    .fh-row span:first-child { color: rgba(244,237,216,.55); }
+    .fh-row span:last-child { color: rgba(244,237,216,.3); }
+    @media (max-width: 768px) {
+      #find { padding: 6rem 1.5rem; }
+      .find-top { grid-template-columns: 1fr; gap: 3rem; }
     }
 
     /* ─── FOOTER ─── */
     footer {
-      background: var(--espresso);
-      padding: 3.5rem 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      background: var(--esp);
+      padding: 2.2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+      border-top: 1px solid rgba(244,237,216,.05);
     }
-    .footer-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .footer-logo {
+    .foot-brand {
       font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: var(--cream);
-      text-decoration: none;
+      font-size: 1rem; font-style: italic; font-weight: 400;
+      color: rgba(244,237,216,.35); text-decoration: none;
     }
-    .footer-logo span { color: var(--gold); }
-    .footer-copy {
-      font-size: 0.78rem;
-      color: rgba(247,242,233,0.3);
-      font-weight: 300;
-      letter-spacing: 0.04em;
+    footer small {
+      font-size: .68rem; letter-spacing: .06em;
+      color: rgba(244,237,216,.18);
     }
-    .footer-links {
-      display: flex;
-      gap: 1.75rem;
-      list-style: none;
+    .foot-links { display: flex; gap: 2rem; list-style: none; }
+    .foot-links a {
+      font-size: .68rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(244,237,216,.22); text-decoration: none; transition: color .2s;
     }
-    .footer-links a {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(247,242,233,0.4);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--gold); }
-
-    @media (max-width: 640px) {
-      .footer-inner { flex-direction: column; text-align: center; }
-      .footer-links { justify-content: center; }
+    .foot-links a:hover { color: rgba(244,237,216,.6); }
+    @media (max-width: 600px) {
+      footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+      .foot-links { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <a href="#hero" class="nav-logo">Ground <span>Up</span></a>
-    <ul class="nav-links">
-      <li><a href="#welcome">About</a></li>
-      <li><a href="#serve">Menu</a></li>
-      <li><a href="#events">Events</a></li>
-      <li><a href="#find">Find Us</a></li>
-    </ul>
-    <a href="tel:07710153421" class="nav-cta">Call Us</a>
-    <button class="nav-hamburger" id="hamBtn" aria-label="Open menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo"><b>Ground</b> Up</a>
+  <div class="nav-r">
+    <a href="#about">About</a>
+    <a href="#menu">Menu</a>
+    <a href="#events">Events</a>
+    <a href="#find">Find Us</a>
+    <a href="tel:07710153421" class="nav-call">07710 153 421</a>
+  </div>
+  <button class="ham" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true">
-    <button class="mobile-close" id="mobileClose" aria-label="Close menu">&#x2715;</button>
-    <a href="#welcome" class="mm-link">About</a>
-    <a href="#serve" class="mm-link">Menu</a>
-    <a href="#vibe" class="mm-link">Vibe</a>
-    <a href="#events" class="mm-link">Events</a>
-    <a href="#find" class="mm-link">Find Us</a>
+<!-- MOBILE NAV -->
+<div class="mob" id="mob" role="dialog" aria-modal="true">
+  <button class="mob-close" id="mobClose" aria-label="Close">&#x2715;</button>
+  <a href="#about" class="mob-l">About</a>
+  <a href="#menu" class="mob-l">Menu</a>
+  <a href="#events" class="mob-l">What's On</a>
+  <a href="#find" class="mob-l">Find Us</a>
+</div>
+
+
+<!-- ─── HERO ─── -->
+<section id="hero" class="grain">
+  <div class="hero-blobs"></div>
+
+  <div class="hero-main">
+    <div class="hero-type rv">
+      <p class="hero-city">Rye, East Sussex</p>
+      <h1>
+        <span class="h1-a">Ground</span>
+        <span class="h1-b">Up.</span>
+      </h1>
+    </div>
+    <div class="hero-col rv" style="transition-delay:.15s">
+      <p>A coffee shop in Rye that actually <em>gives a damn</em> — about the beans, the people, and the town it calls home.</p>
+      <p>Founded by Esther. Built from scratch. Come as you are.</p>
+      <a href="#find" class="hero-link">
+        86 Fishmarket Rd
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 10L10 2M4 2h6v6"/>
+        </svg>
+      </a>
+    </div>
   </div>
 
-  <!-- ─── HERO ─── -->
-  <section id="hero" class="grain">
-    <div class="hero-bg"></div>
-    <div class="hero-vignette"></div>
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-track" aria-hidden="true">
+      <span>Specialty Coffee</span><span class="dot"> · </span>
+      <span>Rye Bay Beans</span><span class="dot"> · </span>
+      <span>Sussex Kitchen</span><span class="dot"> · </span>
+      <span>Dog Friendly</span><span class="dot"> · </span>
+      <span>Free Wi-Fi</span><span class="dot"> · </span>
+      <span>Community Hub</span><span class="dot"> · </span>
+      <span>Takeaway Available</span><span class="dot"> · </span>
+      <span>Parking Opposite</span><span class="dot"> · </span>
+      <span>Entrepreneur Meet-Ups</span><span class="dot"> · </span>
+      <span>Chess &amp; Yoga</span><span class="dot"> · </span>
+      <!-- duplicate for seamless loop -->
+      <span>Specialty Coffee</span><span class="dot"> · </span>
+      <span>Rye Bay Beans</span><span class="dot"> · </span>
+      <span>Sussex Kitchen</span><span class="dot"> · </span>
+      <span>Dog Friendly</span><span class="dot"> · </span>
+      <span>Free Wi-Fi</span><span class="dot"> · </span>
+      <span>Community Hub</span><span class="dot"> · </span>
+      <span>Takeaway Available</span><span class="dot"> · </span>
+      <span>Parking Opposite</span><span class="dot"> · </span>
+      <span>Entrepreneur Meet-Ups</span><span class="dot"> · </span>
+      <span>Chess &amp; Yoga</span><span class="dot"> · </span>
+    </div>
+  </div>
+</section>
 
-    <div class="hero-content">
-      <div class="hero-eyebrow">Rye, East Sussex</div>
-      <h1 class="hero-title">Coffee &amp;<br><em>Community</em></h1>
-      <p class="hero-sub">Rye's favourite independent coffee shop.</p>
-      <div class="hero-actions">
-        <a href="#serve" class="btn-primary">Explore the Menu</a>
-        <a href="#find" class="btn-ghost">Find Us</a>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="about-in">
+    <span class="about-kicker rv">Welcome — Ground Up, Rye</span>
+    <p class="about-pull rv" style="transition-delay:.1s">
+      "Built from <em>the ground up</em> — by one person, with one idea: that Rye deserved better coffee and a proper place to think."
+    </p>
+    <div class="about-cols">
+      <div class="rv">
+        <p>Esther opened Ground Up because she believed a town as alive as Rye deserved a coffee shop to match. Not a chain. Not a compromise. <strong>Something real.</strong></p>
+        <p>Every cup is made with local Rye Bay Coffee Beans, pulled to order. The food comes from the award-winning Sussex Kitchen. The teas are sourced properly. Nothing here is an afterthought.</p>
+        <div class="about-sig">
+          <small>Founded by</small>
+          <strong>Esther</strong>
+        </div>
+      </div>
+      <div class="rv" style="transition-delay:.15s">
+        <p>Ground Up isn't just a coffee shop — it's a room where things happen. Where the early risers plan their next move, where strangers become regulars, where the chess board is always set up.</p>
+        <p>Whether you're here for twenty minutes or the whole afternoon, <strong>you're welcome.</strong> Bring your dog. Bring your laptop. Just leave your bad mood at the door.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── MENU ─── -->
+<section id="menu">
+  <div class="menu-in">
+    <div class="menu-top rv">
+      <h2>The Menu</h2>
+      <p class="menu-top-note">Everything sourced with care. Nothing from a box. Ask us if you're not sure.</p>
+    </div>
+    <div class="menu-grid">
+
+      <!-- Left col -->
+      <div>
+        <div class="menu-cat rv">
+          <span class="cat-label">Coffee</span>
+          <div class="menu-item">
+            <p class="mi-name">Specialty Espresso Drinks</p>
+            <p class="mi-desc">Brewed using local Rye Bay Coffee Beans. Flat white, cortado, latte, cappuccino, Americano. Every shot pulled to order.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Pour Over &amp; Filter</p>
+            <p class="mi-desc">For those who want to slow down. Ask us what's on today.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Oat, Almond &amp; Whole Milk</p>
+            <p class="mi-desc">All alternatives available. No surcharge for asking nicely.</p>
+          </div>
+        </div>
+
+        <div class="menu-cat rv" style="transition-delay:.1s">
+          <span class="cat-label">Something Different</span>
+          <div class="menu-item">
+            <p class="mi-name">Booyah</p>
+            <p class="mi-desc">Probiotic, natural, alive. A proper healthy drink from people who care about what they make.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Kombu Heritage</p>
+            <p class="mi-desc">Fermented kombucha, small-batch. Because sometimes you just don't want another coffee.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right col -->
+      <div>
+        <div class="menu-cat rv" style="transition-delay:.08s">
+          <span class="cat-label">Food</span>
+          <div class="menu-item">
+            <p class="mi-name">Sandwiches &amp; Toasties</p>
+            <p class="mi-desc">Made fresh from the award-winning Sussex Kitchen. Seasonal ingredients, proper bread, no sad triangles wrapped in plastic.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Pastries</p>
+            <p class="mi-desc">Daily. Croissants, pastries, the occasional thing that surprises you. Ask what's in today.</p>
+          </div>
+        </div>
+
+        <div class="menu-cat rv" style="transition-delay:.18s">
+          <span class="cat-label">Hot Drinks</span>
+          <div class="menu-item">
+            <p class="mi-name">Loose-Leaf Teas</p>
+            <p class="mi-desc">Locally sourced. Proper brewing time. Not a teabag dropped in hot water.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Hot Chocolate</p>
+            <p class="mi-desc">Rich, dark, and made to order. Not from a sachet.</p>
+          </div>
+        </div>
+
+        <p class="menu-footnote rv" style="transition-delay:.25s">
+          Menu changes with the seasons. Some things run out. That's what happens when you use real ingredients.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── VIBE ─── -->
+<section id="vibe">
+  <div class="vibe-in">
+    <p class="vibe-q rv">
+      "Some days you need a good table, a flat white that doesn't disappoint, and <em>nobody asking if you're still using that chair.</em> That's what we're here for."
+    </p>
+    <div class="vibe-row rv" style="transition-delay:.2s">
+      <div class="vibe-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+        Free Wi-Fi
+      </div>
+      <div class="vibe-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5M8 14v.5A3.5 3.5 0 0 0 11.5 18v0a3.5 3.5 0 0 0 3.5-3.5V14M12 18v4M8 22h8"/></svg>
+        Dogs welcome
+      </div>
+      <div class="vibe-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Open from 7am weekdays
+      </div>
+      <div class="vibe-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Parking opposite
+      </div>
+      <div class="vibe-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        Takeaway available
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── EVENTS ─── -->
+<section id="events">
+  <div class="events-in">
+    <span class="events-kicker rv">What's on</span>
+
+    <div class="ev-row rv">
+      <span class="ev-n">01</span>
+      <div>
+        <p class="ev-name">Entrepreneur's Meet-Up</p>
+        <p class="ev-desc" data-when="1st Monday · 6am">Start the week with people who mean it. Local founders, freelancers, and anyone with something to build. Coffee on arrival, no agenda, no slides.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">1st Monday · 6am</span>
+        <span class="ev-status">Regular — all welcome</span>
       </div>
     </div>
 
-    <a href="#welcome" class="scroll-arrow" aria-label="Scroll down">
-      <span>Scroll</span>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(247,242,233,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 5v14M5 12l7 7 7-7"/>
-      </svg>
-    </a>
-  </section>
+    <div class="ev-row rv" style="transition-delay:.1s">
+      <span class="ev-n">02</span>
+      <div>
+        <p class="ev-name">Chess</p>
+        <p class="ev-desc" data-when="Drop in anytime">The board's always set up. Come in, challenge a stranger, or just watch. All levels. No need to book.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">Drop in anytime</span>
+        <span class="ev-status">Ongoing</span>
+      </div>
+    </div>
 
-  <!-- ─── WELCOME ─── -->
-  <section id="welcome">
-    <div class="section-inner" style="padding-top: 8rem; padding-bottom: 7rem;">
-      <div class="welcome-grid">
-        <div class="welcome-left reveal-left">
-          <div class="section-label">Our story</div>
-          <h2>Welcome to<br><em>Ground Up</em></h2>
-          <p>We're Rye's best independent coffee shop and community hub, <strong>built from the ground up</strong> by our founder Esther.</p>
-          <p>Great coffee. Great people. Great ideas. Whether you're here for a quick flat white or a long afternoon of work and conversation, you'll always find a warm welcome.</p>
-          <div class="divider"></div>
-          <div class="founder-tag" style="margin-top:2rem;">
-            <div class="founder-avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="rgba(247,242,233,0.8)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-              </svg>
-            </div>
-            <div class="founder-info">
-              <small>Founded by</small>
-              <strong>Esther</strong>
-            </div>
-          </div>
+    <div class="ev-row rv" style="transition-delay:.2s">
+      <span class="ev-n">03</span>
+      <div>
+        <p class="ev-name">Sunrise Yoga</p>
+        <p class="ev-desc" data-when="Coming back soon">Our sunrise sessions are on a short break. Follow us on Instagram for the return date — it's coming back.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">Coming back soon</span>
+        <span class="ev-status">@groundup_coffeeshop</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ─── FIND US ─── -->
+<section id="find">
+  <div class="find-in">
+    <div class="find-top">
+      <div class="rv">
+        <h2 class="find-h">Come find<br>us in Rye.</h2>
+        <p class="find-sub">We're at 86 Fishmarket Road — by the famous Skinners Roundabout on the way to Camber Sands. Easy to find. Worth the walk.</p>
+      </div>
+      <div class="find-details rv" style="transition-delay:.15s">
+        <div class="fd">
+          <small>Address</small>
+          <span>86 Fishmarket Rd, Rye TN31 7LP</span>
         </div>
-        <div class="welcome-right reveal">
-          <div class="welcome-card" style="transition-delay:0.1s;">
-            <div class="wc-label">Our mission</div>
-            <div class="wc-val">Coffee that connects</div>
-            <div class="wc-desc">Specialty beans, honest food, and a space where Rye comes together. Every cup brewed with care.</div>
-          </div>
-          <div class="welcome-card" style="transition-delay:0.2s;">
-            <div class="wc-label">Location</div>
-            <div class="wc-val">Rye, East Sussex</div>
-            <div class="wc-desc">By the famous Skinners Roundabout on the way to Camber.</div>
-          </div>
-          <div class="welcome-card" style="transition-delay:0.3s;">
-            <div class="wc-label">Community</div>
-            <div class="wc-val">Hub &amp; home</div>
-            <div class="wc-desc">From entrepreneur meetups to chess evenings — a space for everyone.</div>
-          </div>
+        <div class="fd">
+          <small>Phone</small>
+          <a href="tel:07710153421">07710 153 421</a>
+        </div>
+        <div class="fd">
+          <small>Email</small>
+          <a href="mailto:esther@groundupbusiness.co.uk">esther@groundupbusiness.co.uk</a>
+        </div>
+        <div class="fd">
+          <small>Instagram</small>
+          <a href="https://www.instagram.com/groundup_coffeeshop" target="_blank" rel="noopener">@groundup_coffeeshop</a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- ─── WHAT WE SERVE ─── -->
-  <section id="serve" class="grain">
-    <div class="section-inner">
-      <div class="serve-header reveal">
-        <div class="section-label">What we serve</div>
-        <h2>Made with care,<br>sourced with purpose</h2>
-        <p>Every item on our menu is chosen with intention — local, seasonal, and crafted to complement your morning.</p>
-      </div>
-      <div class="serve-grid">
-
-        <!-- Card 1 -->
-        <div class="serve-card reveal" style="transition-delay:0.05s;">
-          <svg class="serve-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M10 36h28M14 36V20a10 10 0 0 1 20 0v16"/>
-            <path d="M34 22h4a4 4 0 0 1 0 8h-4"/>
-            <ellipse cx="24" cy="13" rx="4" ry="2"/>
-          </svg>
-          <h3>Specialty Coffee</h3>
-          <p>Expertly brewed using local Rye Bay Coffee Beans — from flat whites to pour-overs, every shot is crafted for flavour.</p>
-          <div class="serve-tag">Rye Bay Beans</div>
-        </div>
-
-        <!-- Card 2 -->
-        <div class="serve-card reveal" style="transition-delay:0.12s;">
-          <svg class="serve-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 36V20a8 8 0 0 1 16 0v16H16z"/>
-            <path d="M32 24h4a4 4 0 0 1 0 8h-4"/>
-            <path d="M12 36h24"/>
-            <path d="M20 16c0-2 2-3 4-3s4 1 4 3"/>
-          </svg>
-          <h3>Teas &amp; Hot Chocolate</h3>
-          <p>Locally sourced loose-leaf teas and a rich, velvety hot chocolate to warm you from the inside out.</p>
-          <div class="serve-tag">Locally Sourced</div>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="serve-card reveal" style="transition-delay:0.2s;">
-          <svg class="serve-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="8" y="20" width="32" height="16" rx="2"/>
-            <path d="M12 20v-2a4 4 0 0 1 8 0v2M28 20v-2a4 4 0 0 1 8 0v2"/>
-            <path d="M8 28h32"/>
-            <circle cx="20" cy="24" r="1.5" fill="currentColor"/>
-            <circle cx="28" cy="24" r="1.5" fill="currentColor"/>
-          </svg>
-          <h3>Sandwiches &amp; Pastries</h3>
-          <p>Fresh sandwiches, toasties, and pastries sourced from the award-winning Sussex Kitchen. Honest food done properly.</p>
-          <div class="serve-tag">Sussex Kitchen</div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="serve-card reveal" style="transition-delay:0.28s;">
-          <svg class="serve-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M24 10c-6 0-10 4-10 10s4 10 10 10 10-4 10-10-4-10-10-10z"/>
-            <path d="M24 20v-4M22 18h4"/>
-            <path d="M16 34c0 2 3.6 4 8 4s8-2 8-4"/>
-            <path d="M18 34l-2 2M30 34l2 2"/>
-          </svg>
-          <h3>Healthy Drinks</h3>
-          <p>Booyah and Kombu Heritage — probiotic, natural, and full of goodness. The perfect complement to your coffee.</p>
-          <div class="serve-tag">Booyah · Kombu</div>
-        </div>
-
-      </div>
+    <div class="find-hours rv" style="transition-delay:.2s">
+      <p class="fh-title">Opening hours</p>
+      <div class="fh-row"><span>Monday – Friday</span><span>7am – 5pm</span></div>
+      <div class="fh-row"><span>Saturday</span><span>8am – 4pm</span></div>
+      <div class="fh-row"><span>Sunday</span><span>9am – 3pm</span></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ─── VIBE ─── -->
-  <section id="vibe">
-    <div class="vibe-accent"></div>
-    <div class="vibe-accent-2"></div>
-    <div class="section-inner">
-      <div class="vibe-inner">
-        <div class="section-label reveal" style="justify-content:center;margin-bottom:1.5rem;">The Ground Up feeling</div>
-        <blockquote class="vibe-quote reveal">
-          "Whether you're catching up with friends, working remotely, or just need a great <em>flat white</em> — you'll always find a warm welcome here."
-        </blockquote>
-        <div class="vibe-pills reveal" style="transition-delay:0.2s;">
-          <div class="vibe-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
-            Free Wi-Fi
-          </div>
-          <div class="vibe-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5"/><path d="M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5"/><path d="M8 14v.5A3.5 3.5 0 0 0 11.5 18v0a3.5 3.5 0 0 0 3.5-3.5V14"/><path d="M6.526 14c-1.21-.128-2.234-.76-2.584-1.801A5.72 5.72 0 0 1 3.5 9"/><path d="M17.474 14c1.21-.128 2.234-.76 2.584-1.801.21-.605.363-1.318.442-2.199"/><path d="M12 18v4"/><path d="M8 22h8"/></svg>
-            Dog Friendly
-          </div>
-          <div class="vibe-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-            Parking Opposite
-          </div>
-          <div class="vibe-pill">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
-            Takeaway Available
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ─── EVENTS ─── -->
-  <section id="events">
-    <div class="section-inner" style="padding-top:8rem;padding-bottom:8rem;">
-      <div class="events-header">
-        <div>
-          <div class="section-label reveal">Community events</div>
-          <h2 class="reveal" style="transition-delay:0.1s;">What's on at<br>Ground Up</h2>
-        </div>
-        <p class="reveal" style="transition-delay:0.2s;">Join us for regular events — from early morning networking to drop-in chess. There's always something happening.</p>
-      </div>
-      <div class="events-grid">
+<!-- ─── FOOTER ─── -->
+<footer>
+  <a href="#hero" class="foot-brand">Ground Up</a>
+  <small>© 2026 Ground Up Business. Built from the ground up.</small>
+  <ul class="foot-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#find">Find Us</a></li>
+  </ul>
+</footer>
 
-        <div class="event-card reveal" style="transition-delay:0.05s;">
-          <div class="ec-num">01</div>
-          <h3 class="ec-title">Entrepreneur's Meet-Up</h3>
-          <div class="ec-when">1st Monday · 6am</div>
-          <p class="ec-desc">Start your week with purpose. Connect with local business owners, share ideas, and find your next collaborator over the best coffee in Rye.</p>
-          <span class="ec-status active">Regular event</span>
-        </div>
 
-        <div class="event-card reveal" style="transition-delay:0.15s;">
-          <div class="ec-num">02</div>
-          <h3 class="ec-title">Chess Games</h3>
-          <div class="ec-when">Drop in anytime</div>
-          <p class="ec-desc">Challenge a stranger, sharpen your strategy, or simply enjoy the quiet focus of a game over a warm drink. All levels welcome.</p>
-          <span class="ec-status active">Ongoing</span>
-        </div>
+<script>
+  // Nav
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 80), { passive: true });
 
-        <div class="event-card reveal" style="transition-delay:0.25s;">
-          <div class="ec-num">03</div>
-          <h3 class="ec-title">Sunrise Yoga</h3>
-          <div class="ec-when">Coming back soon</div>
-          <p class="ec-desc">Greet the morning with intention. Our popular sunrise yoga sessions are taking a short break — watch this space for their return.</p>
-          <span class="ec-status">Returning soon</span>
-        </div>
+  // Mobile menu
+  const hamBtn = document.getElementById('hamBtn');
+  const mob = document.getElementById('mob');
+  const mobClose = document.getElementById('mobClose');
+  const open = () => { mob.classList.add('open'); document.body.style.overflow = 'hidden'; };
+  const close = () => { mob.classList.remove('open'); document.body.style.overflow = ''; };
+  hamBtn.addEventListener('click', open);
+  mobClose.addEventListener('click', close);
+  mob.querySelectorAll('.mob-l').forEach(l => l.addEventListener('click', close));
 
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── FIND US ─── -->
-  <section id="find">
-    <div class="section-inner" style="padding-top:8rem;padding-bottom:8rem;">
-      <div class="find-grid">
-        <div class="find-left reveal-left">
-          <div class="section-label">Visit us</div>
-          <h2>Find Ground Up in the heart of Rye</h2>
-          <p>Located by Rye's famous Skinners Roundabout on the way to Camber Sands. Easy to reach, impossible to miss.</p>
-          <div class="contact-items">
-            <div class="contact-item">
-              <div class="contact-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-              </div>
-              <div class="contact-item-text">
-                <small>Address</small>
-                <span>86 Fishmarket Rd, Rye TN31 7LP</span>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
-              </div>
-              <div class="contact-item-text">
-                <small>Phone</small>
-                <a href="tel:07710153421">07710 153 421</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </div>
-              <div class="contact-item-text">
-                <small>Email</small>
-                <a href="mailto:esther@groundupbusiness.co.uk">esther@groundupbusiness.co.uk</a>
-              </div>
-            </div>
-            <div class="contact-item">
-              <div class="contact-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                </svg>
-              </div>
-              <div class="contact-item-text">
-                <small>Instagram</small>
-                <a href="https://www.instagram.com/groundup_coffeeshop" target="_blank" rel="noopener">@groundup_coffeeshop</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="find-right reveal" style="transition-delay:0.15s;">
-          <div class="map-block">
-            <h3>Getting here</h3>
-            <p>86 Fishmarket Road, by Rye's famous Skinners Roundabout — on the way to Camber Sands.</p>
-            <!-- Illustrated map SVG -->
-            <div class="map-svg-wrap">
-              <svg width="100%" viewBox="0 0 320 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Road grid -->
-                <rect width="320" height="180" fill="#1a2014" rx="2"/>
-                <!-- Main road horizontal -->
-                <rect x="0" y="80" width="320" height="20" fill="#2a3520" rx="0"/>
-                <!-- Road markings -->
-                <rect x="30" y="89" width="20" height="2" fill="rgba(201,169,110,0.3)" rx="1"/>
-                <rect x="80" y="89" width="20" height="2" fill="rgba(201,169,110,0.3)" rx="1"/>
-                <rect x="130" y="89" width="20" height="2" fill="rgba(201,169,110,0.3)" rx="1"/>
-                <rect x="210" y="89" width="20" height="2" fill="rgba(201,169,110,0.3)" rx="1"/>
-                <rect x="265" y="89" width="20" height="2" fill="rgba(201,169,110,0.3)" rx="1"/>
-                <!-- Cross road -->
-                <rect x="150" y="0" width="20" height="180" fill="#2a3520"/>
-                <!-- Roundabout -->
-                <circle cx="160" cy="90" r="28" fill="#1a2014" stroke="rgba(201,169,110,0.2)" stroke-width="1"/>
-                <circle cx="160" cy="90" r="16" fill="#253019"/>
-                <circle cx="160" cy="90" r="6" fill="rgba(201,169,110,0.3)"/>
-                <!-- Pin marker -->
-                <g transform="translate(95, 55)">
-                  <circle cx="12" cy="12" r="12" fill="var(--gold)" opacity="0.9"/>
-                  <circle cx="12" cy="12" r="5" fill="var(--espresso)"/>
-                  <!-- Pulse ring -->
-                  <circle cx="12" cy="12" r="18" stroke="var(--gold)" stroke-width="1.5" opacity="0.3"/>
-                </g>
-                <!-- Label -->
-                <text x="73" y="47" font-family="DM Sans, sans-serif" font-size="7" fill="rgba(247,242,233,0.7)" font-weight="500">86 Fishmarket Rd</text>
-                <!-- Skinners Roundabout label -->
-                <text x="128" y="115" font-family="DM Sans, sans-serif" font-size="6" fill="rgba(201,169,110,0.6)">Skinners</text>
-                <text x="128" y="123" font-family="DM Sans, sans-serif" font-size="6" fill="rgba(201,169,110,0.6)">Roundabout</text>
-                <!-- Compass -->
-                <g transform="translate(288, 18)">
-                  <circle cx="12" cy="12" r="10" stroke="rgba(201,169,110,0.2)" stroke-width="1" fill="rgba(30,17,8,0.4)"/>
-                  <text x="9" y="10" font-family="DM Sans" font-size="6" fill="rgba(201,169,110,0.8)" font-weight="600">N</text>
-                  <line x1="12" y1="3" x2="12" y2="7" stroke="rgba(201,169,110,0.6)" stroke-width="1"/>
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <div class="hours-block">
-            <h4>Opening hours</h4>
-            <div class="hours-row"><span>Monday – Friday</span><span>7am – 5pm</span></div>
-            <div class="hours-row"><span>Saturday</span><span>8am – 4pm</span></div>
-            <div class="hours-row"><span>Sunday</span><span>9am – 3pm</span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── FOOTER ─── -->
-  <footer>
-    <div class="section-inner">
-      <div class="footer-inner">
-        <a href="#hero" class="footer-logo">Ground <span>Up</span></a>
-        <p class="footer-copy">© 2026 Ground Up Business. Built from the ground up.</p>
-        <ul class="footer-links">
-          <li><a href="#welcome">About</a></li>
-          <li><a href="#serve">Menu</a></li>
-          <li><a href="#events">Events</a></li>
-          <li><a href="#find">Find Us</a></li>
-        </ul>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    // ─── Nav scroll behaviour ───
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    // ─── Mobile menu ───
-    const hamBtn = document.getElementById('hamBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const mobileClose = document.getElementById('mobileClose');
-    const mmLinks = mobileMenu.querySelectorAll('.mm-link');
-
-    hamBtn.addEventListener('click', () => {
-      mobileMenu.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-    const closeMobile = () => {
-      mobileMenu.classList.remove('open');
-      document.body.style.overflow = '';
-    };
-    mobileClose.addEventListener('click', closeMobile);
-    mmLinks.forEach(l => l.addEventListener('click', closeMobile));
-
-    // ─── Intersection Observer for scroll reveal ───
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!prefersReducedMotion) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const el = entry.target;
-            const delay = parseFloat(el.style.transitionDelay || '0') * 1000;
-            setTimeout(() => el.classList.add('visible'), delay > 0 ? delay : 0);
-            observer.unobserve(el);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-      document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => {
-        observer.observe(el);
+  // Reveal
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const d = parseFloat(e.target.style.transitionDelay || 0) * 1000;
+          setTimeout(() => e.target.classList.add('in'), d);
+          obs.unobserve(e.target);
+        }
       });
-    } else {
-      document.querySelectorAll('.reveal, .reveal-left, .reveal-scale').forEach(el => {
-        el.classList.add('visible');
-      });
-    }
-  </script>
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  } else {
+    document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+  }
+</script>
 </body>
 </html>
