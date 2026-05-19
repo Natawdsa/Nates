@@ -1,0 +1,2118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mermaid Inn · Rye · Est. 1156</title>
+<meta name="description" content="The Mermaid Inn, Mermaid Street, Rye. Six centuries of story, smugglers, and remarkably good wine. 31 unique rooms, 2 AA Rosette dining, and five resident ghosts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --void: #09070A;
+  --deep: #120E08;
+  --ink: #1C1610;
+  --ember: #2C2016;
+  --gold: #C4983A;
+  --gold-pale: #E2C87A;
+  --champagne: #F0E0B0;
+  --cream: #F5EDD6;
+  --muted: #8A7A62;
+  --faint: #5A4E3C;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--void);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.65;
+  overflow-x: hidden;
+  cursor: none;
+}
+body.menu-open { overflow: hidden; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: none; border: none; background: none; }
+::selection { background: var(--gold); color: var(--void); }
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor-dot,
+#cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+#cursor-dot {
+  width: 8px; height: 8px;
+  background: var(--gold);
+}
+#cursor-ring {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--gold);
+  transition: transform 0.15s var(--ease-out-expo), width 0.3s, height 0.3s, opacity 0.3s;
+}
+#cursor-ring.hover {
+  width: 48px; height: 48px;
+}
+@media (hover: none) {
+  #cursor-dot, #cursor-ring { display: none; }
+  body { cursor: auto; }
+  button { cursor: pointer; }
+}
+
+/* ============================================================
+   PRELOADER
+   ============================================================ */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: var(--void);
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  transition: transform 0.9s var(--ease-in-out-quart);
+}
+#preloader.slide-out {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+.pre-line {
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transition: width 0.8s var(--ease-out-expo);
+}
+.pre-line.animate { width: 200px; }
+.pre-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--champagne);
+  opacity: 0;
+  transition: opacity 0.6s ease 0.4s;
+}
+.pre-title.animate { opacity: 1; }
+.pre-year {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  opacity: 0;
+  text-transform: uppercase;
+  transition: opacity 0.6s ease 0.7s;
+}
+.pre-year.animate { opacity: 1; }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 800;
+  padding: 1.25rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, padding 0.3s ease;
+}
+nav.scrolled {
+  background: rgba(9, 7, 10, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--champagne);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--champagne);
+  opacity: 0.85;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+.nav-cta {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--gold);
+  border-radius: 100px;
+  color: var(--gold) !important;
+  opacity: 1 !important;
+  transition: background 0.25s, color 0.25s !important;
+  font-weight: 500 !important;
+}
+.nav-cta:hover { background: var(--gold); color: var(--void) !important; }
+.scroll-progress-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 1.5px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-pale));
+  transition: width 0.1s linear;
+}
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 850;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: var(--champagne);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.hamburger.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  background: var(--void);
+  z-index: 820;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 4rem);
+  font-weight: 400;
+  color: var(--champagne);
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--gold); }
+.mobile-menu .mob-cta {
+  margin-top: 1rem;
+  padding: 0.8rem 2rem;
+  border: 1px solid var(--gold);
+  border-radius: 100px;
+  color: var(--gold) !important;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-bg {
+  position: absolute;
+  inset: -20%;
+  background-image: url('https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=1920&q=85&sat=-30');
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(9,7,10,0.35) 0%,
+    rgba(9,7,10,0.2) 40%,
+    rgba(9,7,10,0.55) 70%,
+    rgba(9,7,10,0.88) 100%
+  );
+}
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.18;
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 1.5rem;
+  max-width: 900px;
+}
+.hero-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease 0.1s, transform 0.7s var(--ease-out-expo) 0.1s;
+  margin-bottom: 1rem;
+}
+.hero-eyebrow.visible { opacity: 1; transform: translateY(0); }
+.hero-title-line1 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(5rem, 13vw, 13rem);
+  font-weight: 400;
+  line-height: 0.85;
+  color: var(--cream);
+  display: block;
+  overflow: hidden;
+}
+.hero-title-line2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-weight: 300;
+  line-height: 0.95;
+  color: var(--champagne);
+  display: block;
+  text-align: right;
+  margin-right: 2rem;
+  overflow: hidden;
+}
+.hero-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.7s ease, transform 0.7s var(--ease-out-expo);
+}
+.hero-word.visible { opacity: 1; transform: translateY(0); }
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 480px;
+  margin: 1.5rem auto 2.5rem;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease 0.8s, transform 0.7s var(--ease-out-expo) 0.8s;
+}
+.hero-subtitle.visible { opacity: 1; transform: translateY(0); }
+.hero-ctas {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease 1s, transform 0.7s var(--ease-out-expo) 1s;
+}
+.hero-ctas.visible { opacity: 1; transform: translateY(0); }
+.btn-gold {
+  padding: 0.85rem 2rem;
+  background: var(--gold);
+  color: var(--void);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background 0.25s, transform 0.2s;
+  display: inline-block;
+}
+.btn-gold:hover { background: var(--gold-pale); transform: translateY(-1px); }
+.btn-ghost {
+  padding: 0.85rem 2rem;
+  border: 1px solid rgba(196, 152, 58, 0.5);
+  color: var(--champagne);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  display: inline-block;
+}
+.btn-ghost:hover { border-color: var(--gold); background: rgba(196, 152, 58, 0.08); transform: translateY(-1px); }
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeInScroll 1s ease 2s forwards;
+}
+.scroll-indicator span {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease infinite;
+}
+@keyframes scrollPulse {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+@keyframes fadeInScroll { to { opacity: 1; } }
+
+/* ============================================================
+   MARQUEE BAR
+   ============================================================ */
+.marquee-bar {
+  background: var(--deep);
+  border-top: 1px solid rgba(196, 152, 58, 0.3);
+  border-bottom: 1px solid rgba(196, 152, 58, 0.3);
+  overflow: hidden;
+  padding: 0.8rem 0;
+  position: relative;
+  z-index: 1;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 35s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  padding: 0 2rem;
+}
+.marquee-dot {
+  color: var(--gold);
+  font-size: 0.5rem;
+  align-self: center;
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============================================================
+   SECTION COMMONS
+   ============================================================ */
+section { position: relative; }
+.section-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.section-rule {
+  width: 60px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin: 1.5rem 0;
+}
+.section-rule.center { margin: 1.5rem auto; background: linear-gradient(90deg, transparent, var(--gold), transparent); width: 120px; }
+.gold-diamond {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  margin: 0 0.5rem;
+}
+
+/* Reveal animations */
+.reveal {
+  opacity: 0;
+  transition: opacity 0.85s var(--ease-out-expo), transform 0.85s var(--ease-out-expo), clip-path 0.85s var(--ease-out-expo);
+}
+.reveal.rv-up { transform: translateY(50px); }
+.reveal.rv-left { transform: translateX(-60px); }
+.reveal.rv-right { transform: translateX(60px); }
+.reveal.rv-fade {}
+.reveal.rv-clip { clip-path: inset(0 0 100% 0); }
+.reveal.visible {
+  opacity: 1;
+  transform: translate(0,0);
+  clip-path: inset(0 0 0% 0);
+}
+
+/* ============================================================
+   HISTORY SECTION
+   ============================================================ */
+#history {
+  background: var(--deep);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+  overflow: hidden;
+}
+.history-text {
+  padding: 8rem 5rem 8rem 8vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.history-bg-year {
+  font-family: var(--font-display);
+  font-size: clamp(8rem, 18vw, 18rem);
+  font-weight: 700;
+  color: rgba(196, 152, 58, 0.05);
+  line-height: 1;
+  position: absolute;
+  left: 4vw;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.04em;
+}
+.history-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--cream);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+}
+.history-text p {
+  font-size: 0.925rem;
+  color: var(--muted);
+  line-height: 1.8;
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin-bottom: 1rem;
+}
+.history-link {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  transition: gap 0.2s;
+}
+.history-link:hover { gap: 0.85rem; }
+.history-image {
+  position: relative;
+  overflow: hidden;
+}
+.history-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.5) brightness(0.75);
+  transition: filter 0.6s ease, transform 0.6s ease;
+}
+.history-image:hover img { filter: saturate(0.7) brightness(0.85); transform: scale(1.02); }
+.history-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--deep) 0%, transparent 30%);
+  pointer-events: none;
+}
+@media (max-width: 768px) {
+  #history { grid-template-columns: 1fr; }
+  .history-text { padding: 4rem 2rem; }
+  .history-image { height: 50vw; }
+}
+
+/* ============================================================
+   STATS BAR
+   ============================================================ */
+#stats {
+  background: var(--ink);
+  border-top: 1px solid rgba(196, 152, 58, 0.15);
+  border-bottom: 1px solid rgba(196, 152, 58, 0.15);
+}
+.stats-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+.stat-block {
+  text-align: center;
+  position: relative;
+  padding: 1rem 2rem;
+}
+.stat-block:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+}
+.stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 400;
+  color: var(--gold);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1em;
+}
+.stat-label {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.stat-diamond {
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  transform: translateY(-50%) rotate(45deg);
+  width: 7px; height: 7px;
+  background: var(--gold);
+}
+@media (max-width: 600px) {
+  .stats-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .stat-block:not(:last-child)::after { display: none; }
+}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+#timeline {
+  background: var(--void);
+  padding: 6rem 0 5rem;
+  overflow: hidden;
+}
+.timeline-header {
+  text-align: center;
+  padding: 0 2rem;
+  margin-bottom: 4rem;
+}
+.timeline-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.timeline-scroll-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--faint);
+  text-transform: uppercase;
+  margin-top: 0.5rem;
+}
+.timeline-outer {
+  overflow: hidden;
+  cursor: grab;
+  padding: 2rem 6vw 3rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.timeline-outer:active { cursor: grabbing; }
+.timeline-track {
+  display: flex;
+  gap: 0;
+  position: relative;
+  padding: 3rem 0 2rem;
+  min-width: max-content;
+}
+.timeline-line {
+  position: absolute;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--faint) 5%, var(--faint) 95%, transparent);
+}
+.timeline-event {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 260px;
+  padding: 0 2rem;
+  position: relative;
+  text-align: center;
+}
+.timeline-dot {
+  width: 10px; height: 10px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  background: var(--void);
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+.timeline-event:hover .timeline-dot { background: var(--gold); }
+.timeline-year {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: rgba(196, 152, 58, 0.35);
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.timeline-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--cream);
+  margin: 1rem 0 0.5rem;
+}
+.timeline-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 210px;
+}
+
+/* ============================================================
+   ROOMS
+   ============================================================ */
+#rooms {
+  background: var(--deep);
+  padding: 6rem 0 5rem;
+  overflow: hidden;
+}
+.rooms-header {
+  text-align: center;
+  padding: 0 2rem;
+  margin-bottom: 3rem;
+}
+.rooms-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.rooms-header p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.rooms-nav-btns {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.rooms-nav-btn {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(196, 152, 58, 0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  transition: background 0.2s, border-color 0.2s;
+  font-size: 1rem;
+}
+.rooms-nav-btn:hover { background: rgba(196, 152, 58, 0.15); border-color: var(--gold); }
+.rooms-carousel-outer {
+  overflow: hidden;
+  cursor: grab;
+  padding: 0 6vw 1rem;
+}
+.rooms-carousel-outer:active { cursor: grabbing; }
+.rooms-track {
+  display: flex;
+  gap: 1.5rem;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.room-card {
+  flex: 0 0 280px;
+  height: 420px;
+  position: relative;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.room-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+  filter: brightness(0.8);
+}
+.room-card:hover .room-card-img { transform: scale(1.06); }
+.room-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(9,7,10,0.92) 0%, rgba(9,7,10,0.3) 50%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+.room-card-type {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+.room-card-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 0.3rem;
+}
+.room-card-price {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+}
+.room-card-link {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.room-card:hover .room-card-link { opacity: 1; transform: translateY(0); }
+.room-card-features {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s 0.05s, transform 0.3s 0.05s;
+}
+.room-card:hover .room-card-features { opacity: 1; transform: translateY(0); }
+.room-feat-tag {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--champagne);
+  background: rgba(255,255,255,0.08);
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+}
+.rooms-cta-row {
+  text-align: center;
+  margin-top: 3rem;
+  padding: 0 2rem;
+}
+
+/* ============================================================
+   RESTAURANT
+   ============================================================ */
+#restaurant {
+  background: var(--void);
+  min-height: 80vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.restaurant-text {
+  padding: 7rem 5rem 7rem 8vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.restaurant-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.rosette-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(196, 152, 58, 0.1);
+  border: 1px solid rgba(196, 152, 58, 0.3);
+  padding: 0.4rem 0.8rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+.rosette-badge span {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.rosette-star { color: var(--gold); font-size: 0.75rem; }
+.restaurant-text p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 440px;
+  margin-bottom: 2rem;
+}
+.venue-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+.venue-tab {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(90, 78, 60, 0.5);
+  border-radius: 2px;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  cursor: none;
+}
+.venue-tab.active, .venue-tab:hover {
+  color: var(--champagne);
+  border-color: rgba(196, 152, 58, 0.6);
+  background: rgba(196, 152, 58, 0.08);
+}
+.restaurant-image {
+  position: relative;
+  overflow: hidden;
+}
+.restaurant-img-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.restaurant-img-panel.active { opacity: 1; }
+.restaurant-img-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.6) brightness(0.75);
+}
+@media (max-width: 768px) {
+  #restaurant { grid-template-columns: 1fr; }
+  .restaurant-text { padding: 4rem 2rem; }
+  .restaurant-image { height: 60vw; }
+}
+
+/* ============================================================
+   GHOST SECTION
+   ============================================================ */
+#ghosts {
+  background: var(--void);
+  padding: 8rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.ghost-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(30, 15, 10, 0.9) 0%, var(--void) 70%);
+  pointer-events: none;
+}
+.ghost-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.ghost-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(196, 152, 58, 0.15);
+  animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+}
+.ghost-content { position: relative; z-index: 1; }
+.ghost-quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.2;
+  max-width: 700px;
+  margin: 0 auto 1.5rem;
+}
+.ghost-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto 4rem;
+  line-height: 1.7;
+}
+.ghost-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.ghost-card {
+  border: 1px solid rgba(196, 152, 58, 0.15);
+  padding: 2rem 1.5rem;
+  text-align: left;
+  transition: border-color 0.3s;
+  position: relative;
+}
+.ghost-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.5s ease;
+}
+.ghost-card:hover::before { width: 100%; }
+.ghost-card:hover { border-color: rgba(196, 152, 58, 0.35); }
+.ghost-card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--champagne);
+  margin-bottom: 0.75rem;
+}
+.ghost-card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.4;
+}
+.ghost-card p {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+@media (max-width: 768px) {
+  .ghost-cards { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   WEDDINGS
+   ============================================================ */
+#weddings {
+  background: var(--deep);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 70vh;
+  overflow: hidden;
+}
+.weddings-image {
+  position: relative;
+  overflow: hidden;
+}
+.weddings-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.5) brightness(0.65);
+  transition: filter 0.6s;
+}
+.weddings-image:hover img { filter: saturate(0.65) brightness(0.75); }
+.weddings-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, var(--deep) 0%, transparent 30%);
+  pointer-events: none;
+}
+.weddings-text {
+  padding: 7rem 8vw 7rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.weddings-text h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+.weddings-text .tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 420px;
+}
+.wedding-packages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.wedding-pkg {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(196, 152, 58, 0.15);
+  border-radius: 2px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.wedding-pkg:hover { border-color: rgba(196, 152, 58, 0.4); background: rgba(196, 152, 58, 0.04); }
+.wedding-pkg-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--champagne);
+}
+.wedding-pkg-price {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-left: auto;
+}
+@media (max-width: 768px) {
+  #weddings { grid-template-columns: 1fr; }
+  .weddings-image { height: 55vw; }
+  .weddings-text { padding: 4rem 2rem; }
+}
+
+/* ============================================================
+   FIND US / BOOK
+   ============================================================ */
+#find-us {
+  background: var(--ink);
+  padding: 7rem 2rem;
+  text-align: center;
+  border-top: 1px solid rgba(196, 152, 58, 0.1);
+}
+#find-us h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+}
+.mermaid-svg-divider {
+  margin: 2rem auto;
+  opacity: 0.5;
+}
+.contact-block {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin: 2rem 0 3rem;
+}
+.contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  text-align: left;
+}
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+.contact-item-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.2rem;
+}
+.contact-item-value {
+  font-size: 0.875rem;
+  color: var(--champagne);
+  line-height: 1.5;
+}
+.cta-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.hours-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.hours-item {
+  text-align: center;
+}
+.hours-item-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.hours-item-time {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--champagne);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--deep);
+  padding: 5rem 2rem 2.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(196, 152, 58, 0.1);
+}
+.footer-logo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--champagne);
+  letter-spacing: 0.04em;
+  margin-bottom: 2rem;
+}
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.5rem;
+  list-style: none;
+  margin-bottom: 1rem;
+}
+.footer-nav a {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.footer-nav a:hover { color: var(--champagne); }
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.social-link {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(196, 152, 58, 0.25);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.social-link:hover { border-color: var(--gold); color: var(--gold); }
+.footer-rule {
+  width: 100%;
+  max-width: 800px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 152, 58, 0.3), transparent);
+  margin: 1.5rem auto;
+}
+.footer-copy {
+  font-size: 0.7rem;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+}
+
+/* ============================================================
+   UTILITY
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     CUSTOM CURSOR
+     ============================================================ -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- ============================================================
+     PRELOADER
+     ============================================================ -->
+<div id="preloader" aria-hidden="true">
+  <div class="pre-line" id="pre-line"></div>
+  <div class="pre-title" id="pre-title">The Mermaid Inn</div>
+  <div class="pre-year" id="pre-year">MMXXVI</div>
+</div>
+
+<!-- ============================================================
+     MOBILE MENU
+     ============================================================ -->
+<div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+  <a href="#rooms">Rooms</a>
+  <a href="#restaurant">Dining</a>
+  <a href="#history">History</a>
+  <a href="#ghosts">Ghosts</a>
+  <a href="#weddings">Weddings</a>
+  <a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" class="mob-cta" target="_blank" rel="noopener">Book Now</a>
+</div>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav id="main-nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo" aria-label="The Mermaid Inn home">The Mermaid Inn</a>
+  <ul class="nav-links">
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#restaurant">Dining</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#ghosts">Ghosts</a></li>
+    <li><a href="#weddings">Weddings</a></li>
+    <li><a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" class="nav-cta" target="_blank" rel="noopener">Book Now</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="scroll-progress-bar" id="scroll-progress"></div>
+</nav>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<main>
+
+<!-- HERO -->
+<section id="hero" aria-label="Hero banner">
+  <div class="hero-bg" id="hero-bg" role="img" aria-label="Historic hotel exterior"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" id="hero-eyebrow">Mermaid Street &middot; Rye &middot; Est.&thinsp;1156</p>
+    <h1>
+      <span class="hero-title-line1"><span class="hero-word" id="hw1">The Mermaid</span></span>
+      <span class="hero-title-line2"><span class="hero-word" id="hw2">Inn</span></span>
+    </h1>
+    <p class="hero-subtitle" id="hero-sub">Six hundred years of story, smugglers, and remarkably good wine.</p>
+    <div class="hero-ctas" id="hero-ctas">
+      <a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" class="btn-gold" target="_blank" rel="noopener">Reserve Your Room</a>
+      <a href="#history" class="btn-ghost">Explore the Inn</a>
+    </div>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE BAR -->
+<div class="marquee-bar" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">Est. 1156</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">2 AA Rosettes</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">31 Rooms</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Mermaid Street</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Rye, East Sussex</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Tudor Architecture</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Award-Winning Dining</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Secret Passages</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Most Haunted in England</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Free Wi-Fi</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Private Parking</span><span class="marquee-dot">&#9670;</span>
+    <!-- duplicate for seamless loop -->
+    <span class="marquee-item">Est. 1156</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">2 AA Rosettes</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">31 Rooms</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Mermaid Street</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Rye, East Sussex</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Tudor Architecture</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Award-Winning Dining</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Secret Passages</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Most Haunted in England</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Free Wi-Fi</span><span class="marquee-dot">&#9670;</span>
+    <span class="marquee-item">Private Parking</span><span class="marquee-dot">&#9670;</span>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<section id="history" aria-label="History of The Mermaid Inn">
+  <div class="history-text reveal rv-left">
+    <span class="history-bg-year" aria-hidden="true">1420</span>
+    <p class="section-eyebrow">Six Centuries of Story</p>
+    <h2>Built from the ruins of fire</h2>
+    <div class="section-rule"></div>
+    <p>When French Raiders burned Rye to the ground on June 22nd, 1377, they could not have known they were writing the opening chapter of England's most remarkable inn. The Mermaid rose from those ashes, rebuilt in 1420 with Caen stone fireplaces, wattle and daub walls, and secret staircases that have hidden priests, smugglers, and royalty alike.</p>
+    <p>Queen Elizabeth I passed through these very rooms in 1573 on her royal procession. Two centuries later, the notorious Hawkhurst Gang — six hundred strong — claimed the Giant's Fireplace Bar as their smugglers' headquarters. The cellars beneath your feet were first laid in 1156.</p>
+    <a href="#timeline" class="history-link">Discover our History <span aria-hidden="true">&#8594;</span></a>
+  </div>
+  <div class="history-image reveal rv-clip">
+    <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1200&q=85&sat=-20" alt="Historic stone architecture of The Mermaid Inn" loading="lazy">
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section id="stats" aria-label="Key statistics">
+  <div class="stats-inner">
+    <div class="stat-block reveal rv-up">
+      <div class="stat-number">
+        <span class="count-num" data-target="870">0</span><span>+</span>
+      </div>
+      <div class="stat-label">Years of History</div>
+      <div class="stat-diamond"></div>
+    </div>
+    <div class="stat-block reveal rv-up" style="transition-delay:0.15s">
+      <div class="stat-number">
+        <span class="count-num" data-target="31">0</span>
+      </div>
+      <div class="stat-label">Unique Bedrooms</div>
+      <div class="stat-diamond"></div>
+    </div>
+    <div class="stat-block reveal rv-up" style="transition-delay:0.3s">
+      <div class="stat-number">
+        <span class="count-num" data-target="2">0</span>
+      </div>
+      <div class="stat-label">AA Rosette Restaurant</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline" aria-label="Historical timeline">
+  <div class="timeline-header">
+    <p class="section-eyebrow reveal rv-fade">Our Heritage</p>
+    <h2 class="reveal rv-up">A History Written in Stone</h2>
+    <div class="section-rule center reveal rv-fade" style="transition-delay:0.1s"></div>
+    <p class="timeline-scroll-hint reveal rv-fade" style="transition-delay:0.2s">&#8592; Drag to explore &rarr;</p>
+  </div>
+  <div class="timeline-outer" id="timeline-scroll" role="region" aria-label="Scrollable timeline">
+    <div class="timeline-track" id="timeline-track">
+      <div class="timeline-line" aria-hidden="true"></div>
+      <article class="timeline-event">
+        <div class="timeline-year">1156</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">The Cellars Are Built</h3>
+        <p class="timeline-desc">Roman stone foundations laid beneath Mermaid Street — the oldest bones of the Inn.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">1377</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">The Great Fire</h3>
+        <p class="timeline-desc">French Raiders burn the town of Rye to the ground on June 22nd, destroying the original inn.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">1420</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">Risen from the Ashes</h3>
+        <p class="timeline-desc">The Mermaid is rebuilt, much as it stands today — Caen stone, wattle and daub, secret passages.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">1573</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">A Royal Visit</h3>
+        <p class="timeline-desc">Elizabeth I stays at the Inn during her Royal Procession to Rye. The Elizabethan Chamber bears her name still.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">1730s</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">The Hawkhurst Gang</h3>
+        <p class="timeline-desc">Six hundred smugglers make the Giant's Fireplace Bar their headquarters. Two still reportedly haunt the room.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">1982</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">A Queen Returns</h3>
+        <p class="timeline-desc">HM Queen Mother lunches at the Inn upon being named Lord Warden of the Cinque Ports.</p>
+      </article>
+      <article class="timeline-event">
+        <div class="timeline-year">Today</div>
+        <div class="timeline-dot" aria-hidden="true"></div>
+        <h3 class="timeline-title">Still Standing</h3>
+        <p class="timeline-desc">Six hundred years of stories. Still serving. Still standing. Your chapter begins at reception.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section id="rooms" aria-label="Our rooms">
+  <div class="rooms-header">
+    <p class="section-eyebrow reveal rv-fade">Where Legends Sleep</p>
+    <h2 class="reveal rv-up">Thirty-One Unique Bedrooms</h2>
+    <div class="section-rule center reveal rv-fade" style="transition-delay:0.1s"></div>
+    <p class="reveal rv-fade" style="transition-delay:0.15s">31 individually named bedrooms, each with its own story.</p>
+  </div>
+  <div class="rooms-nav-btns" aria-label="Room carousel navigation">
+    <button class="rooms-nav-btn" id="rooms-prev" aria-label="Scroll rooms left">&#8592;</button>
+    <button class="rooms-nav-btn" id="rooms-next" aria-label="Scroll rooms right">&#8594;</button>
+  </div>
+  <div class="rooms-carousel-outer" id="rooms-carousel" role="region" aria-label="Scrollable room carousel">
+    <div class="rooms-track" id="rooms-track">
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=85" alt="Hawkhurst Suite bedroom" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Signature Suite</span>
+          <h3 class="room-card-name">Hawkhurst Suite</h3>
+          <p class="room-card-price">From £195 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">Look-out views</span>
+            <span class="room-feat-tag">Four Poster</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&q=85" alt="Dr Syn's Bed Chamber" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Historic Chamber</span>
+          <h3 class="room-card-name">Dr Syn's Bed Chamber</h3>
+          <p class="room-card-price">From £185 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">Secret Passage</span>
+            <span class="room-feat-tag">Caen Stone</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&q=85" alt="Elizabethan Bed Chamber" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Royal Chamber</span>
+          <h3 class="room-card-name">Elizabethan Chamber</h3>
+          <p class="room-card-price">From £175 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">1573 Royal Visit</span>
+            <span class="room-feat-tag">Haunted</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=900&q=85" alt="Crow's Nest room" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Classic Double</span>
+          <h3 class="room-card-name">Crow's Nest</h3>
+          <p class="room-card-price">From £165 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">Street Views</span>
+            <span class="room-feat-tag">Top Floor</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&q=85" alt="Fleur de Lys room" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Four Poster Room</span>
+          <h3 class="room-card-name">Fleur de Lys</h3>
+          <p class="room-card-price">From £175 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">Antique Furniture</span>
+            <span class="room-feat-tag">Beamed Ceiling</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+      <article class="room-card">
+        <img class="room-card-img" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=900&q=85" alt="The Nutcracker Suite" loading="lazy">
+        <div class="room-card-overlay">
+          <span class="room-card-type">Character Suite</span>
+          <h3 class="room-card-name">The Nutcracker Suite</h3>
+          <p class="room-card-price">From £185 per night</p>
+          <div class="room-card-features">
+            <span class="room-feat-tag">Priest's Escape</span>
+            <span class="room-feat-tag">Rooftop Views</span>
+          </div>
+          <span class="room-card-link">View Room &#8594;</span>
+        </div>
+      </article>
+    </div>
+  </div>
+  <div class="rooms-cta-row reveal rv-up">
+    <a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" class="btn-ghost" target="_blank" rel="noopener">View All 31 Rooms</a>
+  </div>
+</section>
+
+<!-- RESTAURANT -->
+<section id="restaurant" aria-label="Dining at The Mermaid Inn">
+  <div class="restaurant-text">
+    <p class="section-eyebrow reveal rv-fade">Award-Winning Cuisine</p>
+    <h2 class="reveal rv-up">The Finest Table<br>in Rye</h2>
+    <div class="rosette-badge reveal rv-fade" style="transition-delay:0.1s">
+      <span class="rosette-star">&#9733;&#9733;</span>
+      <span>2 AA Rosettes</span>
+    </div>
+    <p class="reveal rv-fade" style="transition-delay:0.15s">From the Linen Fold Panelled Restaurant to the intimate warmth of Dr Syn's Dining Room, every table tells a story. Our kitchen celebrates the finest ingredients from the Romney Marsh and the seas beyond Rye Bay — Winchelsea Beef, Rye Bay Cod, and Romney Marsh Lamb — accompanied by Sussex wines from our 900-year-old cellars.</p>
+    <div class="venue-tabs reveal rv-up" style="transition-delay:0.2s" role="tablist" aria-label="Dining venues">
+      <button class="venue-tab active" data-img="0" role="tab" aria-selected="true">The Restaurant</button>
+      <button class="venue-tab" data-img="1" role="tab" aria-selected="false">Dr Syn Dining Room</button>
+      <button class="venue-tab" data-img="2" role="tab" aria-selected="false">Boardroom</button>
+      <button class="venue-tab" data-img="3" role="tab" aria-selected="false">Giant's Fireplace Bar</button>
+    </div>
+    <div class="reveal rv-up" style="transition-delay:0.3s">
+      <a href="mailto:info@mermaidinn.com" class="btn-gold">Reserve a Table</a>
+    </div>
+  </div>
+  <div class="restaurant-image" aria-live="polite">
+    <div class="restaurant-img-panel active" data-panel="0">
+      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=85&sat=-15" alt="The Linen Fold Panelled Restaurant" loading="lazy">
+    </div>
+    <div class="restaurant-img-panel" data-panel="1">
+      <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&q=85&sat=-20" alt="The Giant's Fireplace Bar" loading="lazy">
+    </div>
+    <div class="restaurant-img-panel" data-panel="2">
+      <img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=900&q=85&sat=-20" alt="The Boardroom private dining" loading="lazy">
+    </div>
+    <div class="restaurant-img-panel" data-panel="3">
+      <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&q=85&sat=-20" alt="Giant's Fireplace Bar" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- GHOSTS -->
+<section id="ghosts" aria-label="The ghosts of The Mermaid Inn">
+  <div class="ghost-bg-overlay" aria-hidden="true"></div>
+  <div class="ghost-particles" id="ghost-particles" aria-hidden="true"></div>
+  <div class="ghost-content">
+    <h2 class="ghost-quote reveal rv-up">"Some guests<br>never leave."</h2>
+    <p class="ghost-sub reveal rv-fade" style="transition-delay:0.15s">Five resident spirits are believed to call the Mermaid Inn home. We keep an extra place set, just in case.</p>
+    <div class="ghost-cards" role="list">
+      <div class="ghost-card reveal rv-up" role="listitem">
+        <span class="ghost-card-icon" aria-hidden="true">&#10022;</span>
+        <h3 class="ghost-card-title">The Elizabethan Chamber</h3>
+        <p>A duel fought in the dead of night. Guests have fled to the lobby at 4am, too frightened to return upstairs. The clash of knives. Shapes moving by the fireplace.</p>
+      </div>
+      <div class="ghost-card reveal rv-up" role="listitem" style="transition-delay:0.15s">
+        <span class="ghost-card-icon" aria-hidden="true">&#10022;</span>
+        <h3 class="ghost-card-title">The Hawkhurst Gang</h3>
+        <p>Two smugglers from the infamous 1730s gang still caress the shadows of the Giant's Fireplace Bar. Regulars. Loyal to the last.</p>
+      </div>
+      <div class="ghost-card reveal rv-up" role="listitem" style="transition-delay:0.3s">
+        <span class="ghost-card-icon" aria-hidden="true">&#10022;</span>
+        <h3 class="ghost-card-title">The Presence</h3>
+        <p>December 1993. A couple woke bolt upright at 4am to the sound of clashing knives. The room had turned inexplicably cold. By morning, nothing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEDDINGS -->
+<section id="weddings" aria-label="Weddings at The Mermaid Inn">
+  <div class="weddings-image reveal rv-clip">
+    <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=85&sat=-15" alt="Wedding celebrations at The Mermaid Inn" loading="lazy">
+  </div>
+  <div class="weddings-text">
+    <p class="section-eyebrow reveal rv-fade">Celebrations Written in History</p>
+    <h2 class="reveal rv-up">Your Forever,<br>in a Building<br>Built in 1156.</h2>
+    <p class="tagline reveal rv-fade" style="transition-delay:0.1s">"Begin your forever in a building that began in 1156. Our function room seats 90, and our team writes every detail of your day."</p>
+    <div class="wedding-packages reveal rv-up" style="transition-delay:0.2s">
+      <div class="wedding-pkg">
+        <div class="gold-diamond" aria-hidden="true"></div>
+        <span class="wedding-pkg-name">Tudor Rose</span>
+        <span class="wedding-pkg-price">From £80pp</span>
+      </div>
+      <div class="wedding-pkg">
+        <div class="gold-diamond" aria-hidden="true"></div>
+        <span class="wedding-pkg-name">The Elizabethan</span>
+        <span class="wedding-pkg-price">From £110pp</span>
+      </div>
+      <div class="wedding-pkg">
+        <div class="gold-diamond" aria-hidden="true"></div>
+        <span class="wedding-pkg-name">The Mermaid</span>
+        <span class="wedding-pkg-price">From £145pp</span>
+      </div>
+    </div>
+    <div class="reveal rv-up" style="transition-delay:0.3s">
+      <a href="mailto:info@mermaidinn.com" class="btn-gold">Enquire About Your Wedding</a>
+    </div>
+  </div>
+</section>
+
+<!-- FIND US / BOOK -->
+<section id="find-us" aria-label="Find us and book your stay">
+  <h2 class="reveal rv-up">Begin Your Stay</h2>
+  <div class="section-rule center reveal rv-fade" style="transition-delay:0.1s"></div>
+
+  <!-- Wave / Mermaid SVG Divider -->
+  <svg class="mermaid-svg-divider reveal rv-fade" width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="transition-delay:0.15s">
+    <path d="M10 20 Q20 5, 30 20 Q40 35, 50 20 Q60 5, 70 20 Q80 35, 90 20 Q100 5, 110 20" stroke="#C4983A" stroke-width="1" fill="none" opacity="0.7"/>
+    <circle cx="60" cy="20" r="4" fill="none" stroke="#C4983A" stroke-width="1" opacity="0.5"/>
+  </svg>
+
+  <div class="contact-block reveal rv-fade" style="transition-delay:0.2s">
+    <div class="contact-item">
+      <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+      <div>
+        <div class="contact-item-label">Address</div>
+        <div class="contact-item-value">Mermaid Street<br>Rye, East Sussex<br>TN31 7EY</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+      </svg>
+      <div>
+        <div class="contact-item-label">Telephone</div>
+        <div class="contact-item-value">+44 (0)1797 223065</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+      <div>
+        <div class="contact-item-label">Email</div>
+        <div class="contact-item-value">info@mermaidinn.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hours-row reveal rv-fade" style="transition-delay:0.25s">
+    <div class="hours-item">
+      <div class="hours-item-label">Restaurant Lunch</div>
+      <div class="hours-item-time">12:00 – 14:00</div>
+    </div>
+    <div class="hours-item">
+      <div class="hours-item-label">Restaurant Dinner</div>
+      <div class="hours-item-time">19:00 – 21:30</div>
+    </div>
+    <div class="hours-item">
+      <div class="hours-item-label">Bar</div>
+      <div class="hours-item-time">11:00 – 23:00</div>
+    </div>
+    <div class="hours-item">
+      <div class="hours-item-label">Check-in</div>
+      <div class="hours-item-time">From 14:00</div>
+    </div>
+  </div>
+
+  <div class="cta-row reveal rv-up" style="transition-delay:0.3s">
+    <a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" class="btn-gold" target="_blank" rel="noopener">Reserve a Room</a>
+    <a href="mailto:info@mermaidinn.com" class="btn-ghost">Contact Us</a>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Mermaid Inn</div>
+  <ul class="footer-nav" aria-label="Footer navigation">
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#restaurant">Dining</a></li>
+    <li><a href="#history">History</a></li>
+    <li><a href="#ghosts">Ghosts</a></li>
+    <li><a href="#weddings">Weddings</a></li>
+    <li><a href="#find-us">Find Us</a></li>
+    <li><a href="https://bookings.ihotelier.com/bookings.jsp?groupID=3026497&hotelID=100729" target="_blank" rel="noopener">Book Now</a></li>
+  </ul>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/mermaidinnrye/" class="social-link" target="_blank" rel="noopener" aria-label="The Mermaid Inn on Instagram">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+    <a href="https://www.facebook.com/TheMermaidInn/" class="social-link" target="_blank" rel="noopener" aria-label="The Mermaid Inn on Facebook">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+      </svg>
+    </a>
+  </div>
+  <div class="footer-rule" aria-hidden="true"></div>
+  <p class="footer-copy">
+    &copy; 2026 The Mermaid Inn &middot; Mermaid Street &middot; Rye &middot; East Sussex &middot; TN31 7EY<br>
+    Established 1156 &middot; Built 1420 &middot; Still Standing
+  </p>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------
+     PRELOADER
+  --------------------------------------------------------------- */
+  const preloader = document.getElementById('preloader');
+  const preLine   = document.getElementById('pre-line');
+  const preTitle  = document.getElementById('pre-title');
+  const preYear   = document.getElementById('pre-year');
+
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      preLine.classList.add('animate');
+      preTitle.classList.add('animate');
+      preYear.classList.add('animate');
+    }, 100);
+    setTimeout(() => {
+      preloader.classList.add('slide-out');
+      setTimeout(() => { preloader.style.display = 'none'; }, 1000);
+    }, 2500);
+  });
+
+  /* ---------------------------------------------------------------
+     CUSTOM CURSOR
+  --------------------------------------------------------------- */
+  const dot  = document.getElementById('cursor-dot');
+  const ring = document.getElementById('cursor-ring');
+  let ringX = 0, ringY = 0;
+  let mouseX = 0, mouseY = 0;
+  let ringRaf;
+
+  if (window.matchMedia('(hover: hover)').matches) {
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top  = mouseY + 'px';
+    });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top  = ringY + 'px';
+      ringRaf = requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    const clickables = 'a, button, [role="tab"], .room-card, .ghost-card, .wedding-pkg, .timeline-event';
+    document.querySelectorAll(clickables).forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+  } else {
+    dot.style.display = 'none';
+    ring.style.display = 'none';
+  }
+
+  /* ---------------------------------------------------------------
+     NAV: scroll state + progress bar
+  --------------------------------------------------------------- */
+  const mainNav       = document.getElementById('main-nav');
+  const scrollProgress = document.getElementById('scroll-progress');
+  const heroEl        = document.getElementById('hero');
+
+  function updateNav() {
+    const heroH = heroEl ? heroEl.offsetHeight : window.innerHeight;
+    if (window.scrollY > 80) {
+      mainNav.classList.add('scrolled');
+    } else {
+      mainNav.classList.remove('scrolled');
+    }
+    const docH   = document.documentElement.scrollHeight - window.innerHeight;
+    const pct    = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+    scrollProgress.style.width = pct + '%';
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  /* ---------------------------------------------------------------
+     HERO PARALLAX + ENTRANCE
+  --------------------------------------------------------------- */
+  const heroBg = document.getElementById('hero-bg');
+
+  function heroParallax() {
+    const y = window.scrollY * 0.4;
+    heroBg.style.transform = 'translateY(' + y + 'px)';
+  }
+  window.addEventListener('scroll', heroParallax, { passive: true });
+
+  // Hero entrance animation (fire after preloader)
+  function fireHeroEntrance() {
+    const eyebrow = document.getElementById('hero-eyebrow');
+    const hw1     = document.getElementById('hw1');
+    const hw2     = document.getElementById('hw2');
+    const sub     = document.getElementById('hero-sub');
+    const ctas    = document.getElementById('hero-ctas');
+
+    setTimeout(() => {
+      eyebrow.classList.add('visible');
+      setTimeout(() => {
+        hw1.classList.add('visible');
+        setTimeout(() => {
+          hw2.classList.add('visible');
+          setTimeout(() => {
+            sub.classList.add('visible');
+            ctas.classList.add('visible');
+          }, 200);
+        }, 200);
+      }, 150);
+    }, 2600); // fires after preloader slides away
+  }
+  fireHeroEntrance();
+
+  /* ---------------------------------------------------------------
+     MOBILE HAMBURGER
+  --------------------------------------------------------------- */
+  const hamburger  = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  hamburger.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('active');
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.classList.toggle('menu-open', open);
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
+    });
+  });
+
+  /* ---------------------------------------------------------------
+     INTERSECTION OBSERVER: reveal animations
+  --------------------------------------------------------------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => revealObs.observe(el));
+
+  /* ---------------------------------------------------------------
+     COUNTER ANIMATION
+  --------------------------------------------------------------- */
+  function easeOutQuart(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function animateCounter(el) {
+    const target   = parseInt(el.dataset.target, 10);
+    const duration = 2000;
+    const start    = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      el.textContent = Math.round(easeOutQuart(progress) * target);
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  }
+
+  const counters = document.querySelectorAll('.count-num');
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounter(entry.target);
+        counterObs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObs.observe(c));
+
+  /* ---------------------------------------------------------------
+     DRAG SCROLL (timeline + rooms carousel)
+  --------------------------------------------------------------- */
+  function makeDraggable(outer, track) {
+    let isDown   = false;
+    let startX   = 0;
+    let scrollL  = 0;
+
+    outer.addEventListener('mousedown', (e) => {
+      isDown  = true;
+      startX  = e.pageX - outer.offsetLeft;
+      scrollL = outer.scrollLeft;
+      outer.style.userSelect = 'none';
+    });
+    outer.addEventListener('mouseleave', () => { isDown = false; });
+    outer.addEventListener('mouseup',    () => { isDown = false; outer.style.userSelect = ''; });
+    outer.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x    = e.pageX - outer.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      outer.scrollLeft = scrollL - walk;
+    });
+
+    // Touch
+    let touchStartX = 0;
+    let touchScrollL = 0;
+    outer.addEventListener('touchstart', (e) => {
+      touchStartX  = e.touches[0].pageX;
+      touchScrollL = outer.scrollLeft;
+    }, { passive: true });
+    outer.addEventListener('touchmove', (e) => {
+      const x    = e.touches[0].pageX;
+      const walk = (touchStartX - x) * 1.2;
+      outer.scrollLeft = touchScrollL + walk;
+    }, { passive: true });
+  }
+
+  const timelineOuter = document.getElementById('timeline-scroll');
+  const timelineTrack = document.getElementById('timeline-track');
+  if (timelineOuter) makeDraggable(timelineOuter, timelineTrack);
+
+  const roomsCarousel = document.getElementById('rooms-carousel');
+  const roomsTrack    = document.getElementById('rooms-track');
+  if (roomsCarousel) makeDraggable(roomsCarousel, roomsTrack);
+
+  // Rooms arrow buttons
+  const roomsPrev = document.getElementById('rooms-prev');
+  const roomsNext = document.getElementById('rooms-next');
+  const CARD_W    = 296; // card 280 + gap 16
+  if (roomsPrev) roomsPrev.addEventListener('click', () => { roomsCarousel.scrollBy({ left: -CARD_W * 2, behavior: 'smooth' }); });
+  if (roomsNext) roomsNext.addEventListener('click', () => { roomsCarousel.scrollBy({ left: CARD_W * 2, behavior: 'smooth' }); });
+
+  /* ---------------------------------------------------------------
+     RESTAURANT TABS
+  --------------------------------------------------------------- */
+  const venueTabs   = document.querySelectorAll('.venue-tab');
+  const imgPanels   = document.querySelectorAll('.restaurant-img-panel');
+
+  venueTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const idx = parseInt(tab.dataset.img, 10);
+      venueTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      imgPanels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const panel = document.querySelector('[data-panel="' + idx + '"]');
+      if (panel) panel.classList.add('active');
+    });
+  });
+
+  /* ---------------------------------------------------------------
+     GHOST PARTICLES
+  --------------------------------------------------------------- */
+  const particleContainer = document.getElementById('ghost-particles');
+  if (particleContainer) {
+    const count = 25;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'ghost-particle';
+      const size = Math.random() * 4 + 2;
+      const left = Math.random() * 100;
+      const dur  = Math.random() * 12 + 8;
+      const delay = Math.random() * 10;
+      p.style.cssText = [
+        'width:' + size + 'px',
+        'height:' + size + 'px',
+        'left:' + left + '%',
+        'bottom: -20px',
+        'animation-duration:' + dur + 's',
+        'animation-delay:-' + delay + 's'
+      ].join(';');
+      particleContainer.appendChild(p);
+    }
+  }
+
+  /* ---------------------------------------------------------------
+     SMOOTH SCROLL for anchor links
+  --------------------------------------------------------------- */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
