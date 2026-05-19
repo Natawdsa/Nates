@@ -3,171 +3,395 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Mermaid Inn — Preview</title>
+<title>The Mermaid Inn — Rye</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:'Lato',sans-serif;background:#f5f0e8;color:#1c1814}
-  h1,h2,h3,h4{font-family:'Playfair Display',serif}
-  a{transition:all .2s}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 16px; }
 
-  /* NAV */
-  nav{position:sticky;top:0;z-index:100;background:rgba(28,24,20,.97);border-bottom:1px solid rgba(184,150,46,.3);padding:0 2rem}
-  .nav-inner{max-width:1200px;margin:0 auto;height:72px;display:flex;align-items:center;justify-content:space-between}
-  .logo-title{font-family:'Playfair Display',serif;color:#d4af5a;font-size:1.35rem;font-weight:700;letter-spacing:.05em;line-height:1;text-decoration:none}
-  .logo-sub{font-family:'Lato',sans-serif;color:#b8962e;font-size:.62rem;letter-spacing:.25em;text-transform:uppercase}
-  .nav-links{display:flex;gap:2rem;align-items:center}
-  .nav-links a{color:#e8e0d0;text-decoration:none;font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lato',sans-serif}
-  .nav-links a:hover{color:#d4af5a}
-  .btn-book{border:1px solid #b8962e;color:#d4af5a;padding:.5rem 1.25rem;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;font-family:'Lato',sans-serif}
-  .btn-book:hover{background:#b8962e;color:#1c1814}
+:root {
+  --ink:      #0f0e0c;
+  --stone:    #2c2826;
+  --warm:     #5c554e;
+  --muted:    #9c9188;
+  --border:   #e0d8cc;
+  --parchment:#faf7f2;
+  --cream:    #f3ede3;
+  --gold:     #a07840;
+  --gold-lt:  #c49a5a;
+}
 
-  /* HERO */
-  .hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;background:#1c1814;overflow:hidden}
-  .hero-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1600&q=80');background-size:cover;background-position:center;opacity:.35}
-  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(28,24,20,.3),rgba(28,24,20,.7))}
-  .hero-content{position:relative;text-align:center;padding:2rem;max-width:900px}
-  .hero-eyebrow{color:#b8962e;letter-spacing:.4em;text-transform:uppercase;font-size:.75rem;margin-bottom:1.5rem;font-family:'Lato',sans-serif}
-  .hero h1{font-family:'Playfair Display',serif;color:#f5f0e8;font-size:clamp(3rem,8vw,6rem);font-weight:700;line-height:1.1;margin-bottom:.5rem}
-  .hero-sub{font-family:'Playfair Display',serif;font-style:italic;color:#d4af5a;font-size:clamp(1rem,2.5vw,1.5rem);margin-bottom:2rem}
-  .divider{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2.5rem}
-  .divider-line{width:60px;height:1px;background:#b8962e}
-  .divider-icon{color:#b8962e;font-size:1.2rem}
-  .hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
-  .btn-primary{background:#b8962e;color:#1c1814;padding:1rem 2.5rem;text-decoration:none;font-family:'Lato',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
-  .btn-primary:hover{background:#d4af5a}
-  .btn-ghost{border:1px solid rgba(245,240,232,.4);color:#f5f0e8;padding:1rem 2.5rem;text-decoration:none;font-family:'Lato',sans-serif;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase}
-  .btn-ghost:hover{border-color:#b8962e;color:#d4af5a}
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-  /* STATS */
-  .stats{background:#1c1814;border-top:1px solid rgba(184,150,46,.3);border-bottom:1px solid rgba(184,150,46,.3)}
-  .stats-inner{max-width:1200px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:repeat(4,1fr);text-align:center}
-  @media(max-width:600px){.stats-inner{grid-template-columns:repeat(2,1fr)}}
-  .stat-val{font-family:'Playfair Display',serif;color:#d4af5a;font-size:2.5rem;font-weight:700}
-  .stat-lbl{color:#a09080;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Lato',sans-serif;margin-top:.25rem}
+/* ── UTILITIES ────────────────────────────────── */
+.serif       { font-family: 'Cormorant Garamond', Georgia, serif; }
+.eyebrow     { font-family: 'Inter', sans-serif; font-size: .68rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); }
+.wrap        { max-width: 1160px; margin: 0 auto; padding: 0 2rem; }
+.rule        { width: 32px; height: 1px; background: var(--gold); display: block; }
+.rule-center { margin: 0 auto; }
 
-  /* SECTIONS */
-  section{padding:6rem 2rem}
-  .container{max-width:1200px;margin:0 auto}
-  .section-eyebrow{color:#b8962e;letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;font-family:'Lato',sans-serif;margin-bottom:1rem}
-  .section-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);line-height:1.2;margin-bottom:1.5rem}
-  .gold-bar{width:50px;height:2px;background:#b8962e;margin-bottom:1.5rem}
-  .body-text{color:#4a4540;line-height:1.8;font-size:1.05rem;margin-bottom:1.25rem}
-  .dark-text{color:#a09080}
-  .two-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:4rem;align-items:center}
-  .three-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem}
-  .four-col{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem}
+/* ── NAV ──────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; width: 100%; z-index: 100;
+  padding: 0 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  background: rgba(15,14,12,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.nav-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 400; letter-spacing: .08em;
+  color: #f0ebe2; text-decoration: none;
+}
+.nav-brand span { color: var(--gold-lt); }
+.nav-links { display: flex; align-items: center; gap: 2.5rem; }
+.nav-links a {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(240,235,226,.55); text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: #f0ebe2; }
+.nav-cta {
+  font-size: .7rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gold-lt); text-decoration: none;
+  padding: .5rem 1.1rem;
+  border: 1px solid rgba(160,120,64,.5);
+  transition: all .2s;
+}
+.nav-cta:hover { border-color: var(--gold-lt); color: #f0ebe2; }
 
-  /* HISTORY */
-  .history-bg{background:#f5f0e8}
-  .history-img{width:100%;height:480px;object-fit:cover;display:block}
-  .img-wrap{position:relative}
-  .img-border{position:absolute;top:-12px;right:-12px;width:100%;height:100%;border:2px solid #b8962e;z-index:-1}
-  .date-badge{position:absolute;bottom:-1.5rem;left:2rem;background:#1c1814;color:#d4af5a;padding:1rem 1.5rem;font-family:'Playfair Display',serif}
-  .date-num{font-size:2rem;font-weight:700;line-height:1}
-  .date-sub{font-size:.65rem;letter-spacing:.2em;color:#a09080;font-family:'Lato',sans-serif}
+/* ── HERO ─────────────────────────────────────── */
+.hero {
+  height: 100vh; min-height: 600px;
+  position: relative; display: flex; align-items: flex-end;
+  background: var(--ink);
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=1800&q=85');
+  background-size: cover; background-position: center 30%;
+  opacity: .4;
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(15,14,12,.1) 30%, rgba(15,14,12,.85) 100%);
+}
+.hero-inner {
+  position: relative; padding: 0 2.5rem 5rem;
+  max-width: 780px;
+}
+.hero-inner .eyebrow { margin-bottom: 1.5rem; color: var(--gold-lt); }
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.2rem, 7vw, 6rem);
+  font-weight: 300; line-height: 1.05;
+  color: #f0ebe2; letter-spacing: .01em;
+  margin-bottom: 1.25rem;
+}
+.hero h1 em { font-weight: 300; color: var(--gold-lt); font-style: italic; }
+.hero-desc {
+  font-size: 1rem; font-weight: 300; color: rgba(240,235,226,.65);
+  max-width: 440px; margin-bottom: 2.5rem; line-height: 1.75;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+.btn {
+  display: inline-block; text-decoration: none;
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  transition: all .25s;
+}
+.btn-fill {
+  background: var(--gold); color: #fff;
+  padding: .875rem 2rem;
+}
+.btn-fill:hover { background: var(--gold-lt); }
+.btn-line {
+  color: rgba(240,235,226,.7);
+  padding: .875rem 0;
+  border-bottom: 1px solid rgba(240,235,226,.3);
+}
+.btn-line:hover { color: #f0ebe2; border-color: rgba(240,235,226,.7); }
 
-  /* ROOMS */
-  .rooms-bg{background:#1c1814}
-  .section-title-light{color:#f5f0e8}
-  .section-center{text-align:center;margin-bottom:4rem}
-  .card{background:#26211c;border:1px solid rgba(184,150,46,.2);overflow:hidden;transition:transform .3s,border-color .3s}
-  .card:hover{transform:translateY(-4px);border-color:rgba(184,150,46,.6)}
-  .card-img{height:220px;background:#3a3028;display:flex;align-items:center;justify-content:center;font-size:4rem;position:relative}
-  .card-tag{position:absolute;top:1rem;right:1rem;background:#b8962e;color:#1c1814;padding:.25rem .75rem;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lato',sans-serif;font-weight:700}
-  .card-body{padding:1.75rem}
-  .card-type{color:#b8962e;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Lato',sans-serif;margin-bottom:.5rem}
-  .card-title{font-family:'Playfair Display',serif;color:#f5f0e8;font-size:1.5rem;margin-bottom:.75rem}
-  .card-desc{color:#a09080;line-height:1.7;font-size:.95rem;margin-bottom:1.5rem}
-  .card-link{color:#d4af5a;text-decoration:none;font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lato',sans-serif;border-bottom:1px solid rgba(184,150,46,.4);padding-bottom:2px}
-  .view-all{text-align:center;margin-top:3rem}
-  .btn-outline-gold{display:inline-block;border:1px solid #b8962e;color:#d4af5a;padding:1rem 2.5rem;text-decoration:none;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Lato',sans-serif}
+/* ── STRIP ────────────────────────────────────── */
+.strip {
+  background: var(--stone);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.strip-inner {
+  max-width: 1160px; margin: 0 auto; padding: 0 2rem;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  divide-x: 1px solid rgba(255,255,255,.08);
+}
+.strip-item {
+  padding: 2rem 2.5rem;
+  border-right: 1px solid rgba(255,255,255,.06);
+}
+.strip-item:last-child { border-right: none; }
+.strip-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.6rem; font-weight: 300; color: var(--gold-lt);
+  line-height: 1; margin-bottom: .25rem;
+}
+.strip-label {
+  font-size: .68rem; letter-spacing: .15em; text-transform: uppercase;
+  color: rgba(240,235,226,.35); font-weight: 400;
+}
 
-  /* DINING */
-  .dining-bg{background:#f5f0e8}
-  .dining-img{width:100%;height:500px;object-fit:cover;display:block}
-  .rosette-badge{position:absolute;bottom:2rem;left:2rem;background:rgba(28,24,20,.92);padding:1.25rem 1.5rem;border-left:3px solid #b8962e}
-  .rosette-title{color:#d4af5a;font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic}
-  .rosette-sub{color:#a09080;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lato',sans-serif}
-  .quote-block{margin:2rem 0;padding:1.5rem;background:#eee8d8;border-left:3px solid #b8962e;font-family:'Playfair Display',serif;font-style:italic;color:#1c1814;font-size:1.05rem;line-height:1.7}
-  .tags{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem}
-  .tag{background:#1c1814;color:#d4af5a;padding:.4rem 1rem;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Lato',sans-serif}
-  .btn-burgundy{display:inline-block;background:#6b2737;color:#f5f0e8;padding:1rem 2rem;text-decoration:none;font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Lato',sans-serif;font-weight:700}
-  .btn-burgundy:hover{background:#8b3347}
+/* ── GENERIC SECTION ──────────────────────────── */
+.section { padding: 7rem 0; }
+.section-sm { padding: 5rem 0; }
+.section-dark { background: var(--ink); }
+.section-mid  { background: var(--stone); }
+.section-cream { background: var(--cream); }
 
-  /* EXPERIENCES */
-  .exp-bg{background:#2a2420;padding:6rem 2rem}
-  .exp-card{padding:2.5rem 2rem;border:1px solid rgba(184,150,46,.15);background:rgba(255,255,255,.02);transition:border-color .3s,background .3s}
-  .exp-card:hover{border-color:rgba(184,150,46,.5);background:rgba(184,150,46,.05)}
-  .exp-icon{font-size:2.5rem;margin-bottom:1rem}
-  .exp-title{font-family:'Playfair Display',serif;color:#f5f0e8;font-size:1.25rem;margin-bottom:.75rem}
-  .exp-desc{color:#a09080;line-height:1.7;font-size:.95rem}
+/* ── ABOUT / HISTORY ─────────────────────────── */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7rem; align-items: center; }
+.about-text .eyebrow { margin-bottom: 1.25rem; }
+.about-text h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: 300; line-height: 1.15; color: var(--ink);
+  margin-bottom: 1.75rem;
+}
+.about-text h2 em { color: var(--gold); font-style: italic; }
+.about-text p {
+  font-size: .95rem; font-weight: 300; color: var(--warm);
+  line-height: 1.85; margin-bottom: 1.25rem;
+}
+.about-text p:last-of-type { margin-bottom: 2rem; }
+.about-img { position: relative; }
+.about-img img { width: 100%; height: 540px; object-fit: cover; display: block; }
+.about-caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(transparent, rgba(15,14,12,.8));
+}
+.about-caption p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .9rem; font-style: italic; color: rgba(240,235,226,.7);
+  letter-spacing: .03em;
+}
 
-  /* GALLERY */
-  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:4px}
-  .gal-item{overflow:hidden;height:260px}
-  .gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;display:block}
-  .gal-item:hover img{transform:scale(1.05)}
+/* ── ROOMS ────────────────────────────────────── */
+.rooms-header { margin-bottom: 4rem; }
+.rooms-header .eyebrow { margin-bottom: 1.25rem; }
+.rooms-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 300; color: #f0ebe2; line-height: 1.15;
+}
+.rooms-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(255,255,255,.06); }
+.room-card {
+  background: var(--ink); padding: 2.75rem 2.25rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+  transition: background .3s;
+  position: relative;
+}
+.room-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s ease;
+}
+.room-card:hover { background: rgba(255,255,255,.02); }
+.room-card:hover::before { transform: scaleX(1); }
+.room-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem; font-weight: 300;
+  color: rgba(240,235,226,.07); line-height: 1;
+  margin-bottom: .5rem;
+  user-select: none;
+}
+.room-type { font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-lt); margin-bottom: .75rem; }
+.room-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; font-weight: 400; color: #f0ebe2;
+  margin-bottom: 1rem; line-height: 1.2;
+}
+.room-desc { font-size: .875rem; font-weight: 300; color: rgba(240,235,226,.5); line-height: 1.75; margin-bottom: 1.75rem; }
+.room-link {
+  font-size: .68rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold-lt); text-decoration: none;
+  border-bottom: 1px solid rgba(160,120,64,.4); padding-bottom: 2px;
+  transition: border-color .2s, color .2s;
+}
+.room-link:hover { color: #f0ebe2; border-color: rgba(240,235,226,.4); }
+.rooms-foot { text-align: center; margin-top: 3rem; }
 
-  /* TESTIMONIALS */
-  .test-bg{background:#f5f0e8}
-  .test-card{background:#fff;padding:2.5rem;border-top:3px solid #b8962e}
-  .quote-mark{color:#6b5c4a;font-size:2rem;font-family:'Playfair Display',serif;line-height:1;margin-bottom:1rem}
-  .quote-text{color:#4a4540;line-height:1.8;font-style:italic;font-size:1rem;margin-bottom:1.5rem}
-  .author-row{display:flex;align-items:center;gap:.75rem}
-  .author-avatar{width:32px;height:32px;background:#b8962e;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#1c1814;font-family:'Playfair Display',serif;font-weight:700;font-size:.9rem;flex-shrink:0}
-  .author-name{font-family:'Playfair Display',serif;color:#1c1814;font-size:.95rem;font-weight:600}
-  .author-loc{color:#a09080;font-size:.75rem;font-family:'Lato',sans-serif}
+/* ── DINING ───────────────────────────────────── */
+.dining-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7rem; align-items: center; }
+.dining-img-wrap { position: relative; }
+.dining-img-wrap img { width: 100%; height: 580px; object-fit: cover; display: block; }
+.award-chip {
+  position: absolute; bottom: 2rem; right: -1.5rem;
+  background: var(--parchment); padding: 1.25rem 1.75rem;
+  border-left: 2px solid var(--gold);
+}
+.award-chip .num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem; font-weight: 300; color: var(--gold); line-height: 1;
+}
+.award-chip .lbl { font-size: .65rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: .2rem; }
+.dining-text .eyebrow { margin-bottom: 1.25rem; }
+.dining-text h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 300; color: var(--ink); line-height: 1.15;
+  margin-bottom: 1.75rem;
+}
+.dining-text h2 em { color: var(--gold); font-style: italic; }
+.dining-text p { font-size: .95rem; font-weight: 300; color: var(--warm); line-height: 1.85; margin-bottom: 1.25rem; }
+.menu-row { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1.75rem 0 2rem; }
+.menu-pill {
+  font-size: .65rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--warm); padding: .4rem .9rem;
+  border: 1px solid var(--border);
+}
 
-  /* BOOKING BANNER */
-  .banner{padding:5rem 2rem;background:#6b2737;text-align:center}
-  .banner-eyebrow{color:rgba(245,240,232,.6);letter-spacing:.3em;text-transform:uppercase;font-size:.75rem;font-family:'Lato',sans-serif;margin-bottom:1rem}
-  .banner h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#f5f0e8;margin-bottom:1rem}
-  .banner p{color:rgba(245,240,232,.7);max-width:500px;margin:0 auto 2.5rem;line-height:1.7}
-  .banner-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+/* ── PULL QUOTE ───────────────────────────────── */
+.pull-quote-wrap { padding: 5rem 0; background: var(--cream); }
+.pull-quote {
+  max-width: 780px; margin: 0 auto; padding: 0 2rem;
+  text-align: center;
+}
+.pull-quote blockquote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 300; font-style: italic;
+  color: var(--ink); line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+.pull-quote cite {
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); font-style: normal;
+}
 
-  /* FOOTER */
-  .footer{background:#1c1814;padding:6rem 2rem 3rem}
-  .footer-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:3rem}
-  .footer-logo{font-family:'Playfair Display',serif;color:#d4af5a;font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
-  .footer-logo-sub{color:#a09080;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-family:'Lato',sans-serif;margin-bottom:1.5rem}
-  .footer-text{color:#a09080;line-height:1.8;font-size:.95rem}
-  .footer h4{font-family:'Playfair Display',serif;color:#f5f0e8;margin-bottom:1.5rem;font-size:1.1rem}
-  .footer-addr{color:#a09080;line-height:2;font-size:.95rem}
-  .footer-addr a{color:#d4af5a;text-decoration:none}
-  .footer-links{display:flex;flex-direction:column;gap:.5rem}
-  .footer-links a{color:#a09080;text-decoration:none;font-size:.9rem;font-family:'Lato',sans-serif}
-  .footer-links a:hover{color:#d4af5a}
-  .footer-amens{color:#a09080;line-height:2;font-size:.95rem}
-  .footer-bottom{max-width:1200px;margin:4rem auto 0;padding-top:2rem;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-  .footer-bottom p{color:#5a5048;font-size:.8rem;font-family:'Lato',sans-serif}
+/* ── EXPERIENCES ─────────────────────────────── */
+.exp-header { margin-bottom: 4rem; }
+.exp-header .eyebrow { margin-bottom: 1.25rem; color: var(--gold-lt); }
+.exp-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-weight: 300; color: #f0ebe2;
+}
+.exp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,.06); }
+.exp-item {
+  background: var(--stone); padding: 3rem 2.75rem;
+  transition: background .3s;
+}
+.exp-item:hover { background: #302c28; }
+.exp-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: .8rem; color: var(--gold-lt);
+  letter-spacing: .08em; margin-bottom: 1.25rem;
+}
+.exp-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 400; color: #f0ebe2;
+  margin-bottom: .75rem;
+}
+.exp-desc { font-size: .875rem; font-weight: 300; color: rgba(240,235,226,.5); line-height: 1.75; }
 
-  @media(max-width:768px){
-    .nav-links{display:none}
-    .two-col,.three-col,.four-col{grid-template-columns:1fr}
-    .stats-inner{grid-template-columns:repeat(2,1fr)}
-  }
+/* ── GALLERY ─────────────────────────────────── */
+.gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap: 3px;
+}
+.g1 { grid-row: 1 / 3; }
+.gallery div { overflow: hidden; }
+.gallery div img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .7s ease; }
+.gallery div:hover img { transform: scale(1.04); }
+
+/* ── TESTIMONIALS ─────────────────────────────── */
+.test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); }
+.test-card { background: var(--parchment); padding: 3rem 2.5rem; }
+.test-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 300; font-style: italic;
+  color: var(--ink); line-height: 1.65; margin-bottom: 2rem;
+}
+.test-sep { width: 24px; height: 1px; background: var(--gold); margin-bottom: 1.25rem; }
+.test-author { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+/* ── CTA BAND ─────────────────────────────────── */
+.cta-band { padding: 6rem 2rem; background: var(--ink); text-align: center; }
+.cta-band .eyebrow { margin-bottom: 1.5rem; color: var(--gold-lt); }
+.cta-band h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 300; color: #f0ebe2; line-height: 1.15;
+  margin-bottom: 1rem;
+}
+.cta-band p { font-size: .9rem; font-weight: 300; color: rgba(240,235,226,.5); margin-bottom: 2.5rem; }
+.cta-actions { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+/* ── FOOTER ───────────────────────────────────── */
+footer { background: #0a0908; padding: 5rem 2rem 3rem; }
+.footer-grid {
+  max-width: 1160px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem;
+  padding-bottom: 4rem;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.f-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem; font-weight: 300; color: #f0ebe2;
+  letter-spacing: .06em; margin-bottom: .35rem;
+}
+.f-sub { font-size: .65rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+.f-desc { font-size: .85rem; font-weight: 300; color: rgba(240,235,226,.4); line-height: 1.8; }
+footer h4 { font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(240,235,226,.3); margin-bottom: 1.25rem; }
+.f-links { display: flex; flex-direction: column; gap: .6rem; }
+.f-links a { font-size: .85rem; font-weight: 300; color: rgba(240,235,226,.45); text-decoration: none; transition: color .2s; }
+.f-links a:hover { color: #f0ebe2; }
+.footer-bottom {
+  max-width: 1160px; margin: 2.5rem auto 0;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-bottom p { font-size: .75rem; color: rgba(240,235,226,.2); font-weight: 300; }
+
+/* ── RESPONSIVE ───────────────────────────────── */
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .about-grid, .dining-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .about-img { order: -1; }
+  .rooms-grid { grid-template-columns: 1fr; }
+  .exp-grid { grid-template-columns: 1fr; }
+  .gallery { grid-template-columns: 1fr 1fr; grid-template-rows: 220px 220px 220px; }
+  .g1 { grid-row: auto; }
+  .test-grid { grid-template-columns: 1fr; }
+  .strip-inner { grid-template-columns: repeat(2,1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .award-chip { right: 0; }
+}
+@media (max-width: 560px) {
+  .strip-inner { grid-template-columns: repeat(2,1fr); }
+  .gallery { grid-template-columns: 1fr; grid-template-rows: repeat(6,200px); }
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-inner">
-    <a href="#top" class="logo-title" style="text-decoration:none">
-      <div>The Mermaid Inn</div>
-      <div class="logo-sub">Est. 1420 · Rye, East Sussex</div>
-    </a>
-    <div class="nav-links">
-      <a href="#rooms">Rooms</a>
-      <a href="#dining">Dining</a>
-      <a href="#history">History</a>
-      <a href="#experiences">Experiences</a>
-      <a href="#contact">Contact</a>
-      <a href="https://www.mermaidinn.com" target="_blank" class="btn-book">Book Now</a>
-    </div>
+  <a href="#top" class="nav-brand">The Mermaid <span>Inn</span></a>
+  <div class="nav-links">
+    <a href="#history">History</a>
+    <a href="#rooms">Rooms</a>
+    <a href="#dining">Dining</a>
+    <a href="#experiences">Experiences</a>
+    <a href="#contact">Contact</a>
+    <a href="https://www.mermaidinn.com" target="_blank" class="nav-cta">Book a Stay</a>
   </div>
 </nav>
 
@@ -175,151 +399,155 @@
 <section class="hero" id="top">
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <p class="hero-eyebrow">Est. 1420 · Rye, East Sussex</p>
-    <h1>The Mermaid Inn</h1>
-    <p class="hero-sub">Six centuries of stories. One unforgettable stay.</p>
-    <div class="divider">
-      <div class="divider-line"></div>
-      <span class="divider-icon">⚓</span>
-      <div class="divider-line"></div>
-    </div>
-    <div class="hero-btns">
-      <a href="https://www.mermaidinn.com" target="_blank" class="btn-primary">Reserve Your Room</a>
-      <a href="#history" class="btn-ghost">Our Story</a>
+  <div class="hero-inner">
+    <p class="eyebrow">Rye, East Sussex · Since 1420</p>
+    <h1>Where history<br>still <em>breathes</em></h1>
+    <p class="hero-desc">
+      Six centuries of shelter, story, and fine hospitality in one of England's oldest inns — rebuilt in 1420 and unchanged in spirit ever since.
+    </p>
+    <div class="hero-actions">
+      <a href="https://www.mermaidinn.com" target="_blank" class="btn btn-fill">Reserve a Room</a>
+      <a href="#history" class="btn btn-line">Discover our story</a>
     </div>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats">
-  <div class="stats-inner">
-    <div style="padding:1rem"><div class="stat-val">1420</div><div class="stat-lbl">Year Founded</div></div>
-    <div style="padding:1rem"><div class="stat-val">31</div><div class="stat-lbl">Unique Rooms</div></div>
-    <div style="padding:1rem"><div class="stat-val">2</div><div class="stat-lbl">AA Rosettes</div></div>
-    <div style="padding:1rem"><div class="stat-val">600+</div><div class="stat-lbl">Years of History</div></div>
+<!-- STATS STRIP -->
+<div class="strip">
+  <div class="strip-inner">
+    <div class="strip-item"><div class="strip-num">1420</div><div class="strip-label">Year Founded</div></div>
+    <div class="strip-item"><div class="strip-num">31</div><div class="strip-label">Unique Rooms</div></div>
+    <div class="strip-item"><div class="strip-num">2</div><div class="strip-label">AA Rosettes</div></div>
+    <div class="strip-item"><div class="strip-num">600+</div><div class="strip-label">Years of History</div></div>
   </div>
 </div>
 
 <!-- HISTORY -->
-<section class="history-bg" id="history">
-  <div class="container two-col">
-    <div>
-      <p class="section-eyebrow">Our Story</p>
-      <h2 class="section-title">A Living Piece of<br><em style="color:#6b2737">English History</em></h2>
-      <div class="gold-bar"></div>
-      <p class="body-text">Our cellars date to 1156. The inn was rebuilt in 1420 after French raiders burned Rye to the ground — and has stood ever since, weathering centuries with quiet defiance.</p>
-      <p class="body-text">In the 1730s, the notorious Hawkhurst Gang used The Mermaid as their base, slipping between secret tunnels that still run beneath your feet. A revolving cupboard once served as their escape route.</p>
-      <p class="body-text" style="margin-bottom:0">Today, Queen Elizabeth the Queen Mother and Prince Edward are among the distinguished guests to have slept within these ancient walls.</p>
-    </div>
-    <div class="img-wrap" style="position:relative">
-      <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=700&q=80" alt="Historic inn interior" class="history-img">
-      <div class="img-border"></div>
-      <div class="date-badge">
-        <div class="date-num">1420</div>
-        <div class="date-sub">Rebuilt after French raid</div>
+<section class="section" id="history">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="eyebrow">Our Story</p>
+        <h2>A living piece of<br><em>English history</em></h2>
+        <p>Our cellars date to 1156. The inn was rebuilt in 1420 after French raiders burned Rye to the ground, and has stood its ground ever since — through smugglers' plots, royal visits, and centuries of quiet English life.</p>
+        <p>In the 1730s, the notorious Hawkhurst Gang used The Mermaid as their headquarters. Secret tunnels still run beneath the building — a revolving cupboard once served as their escape route.</p>
+        <p>Queen Elizabeth the Queen Mother and Prince Edward number among the distinguished guests to have slept beneath these ancient beams.</p>
+        <span class="rule"></span>
+      </div>
+      <div class="about-img">
+        <img src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=900&q=85" alt="Timber-beamed interior of The Mermaid Inn">
+        <div class="about-caption">
+          <p>The Giants Fireplace Bar — unchanged since the 15th century</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ROOMS -->
-<section class="rooms-bg" id="rooms">
-  <div class="container">
-    <div class="section-center">
-      <p class="section-eyebrow">Accommodation</p>
-      <h2 class="section-title section-title-light">Rooms &amp; Suites</h2>
-      <p style="color:#a09080;max-width:550px;margin:0 auto;line-height:1.7">Thirty-one rooms, each with its own character — sloping ceilings, carved four-posters, and the gentle creak of centuries underfoot.</p>
+<section class="section section-dark" id="rooms">
+  <div class="wrap">
+    <div class="rooms-header">
+      <p class="eyebrow">Accommodation</p>
+      <h2 class="rooms-header h2" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:300;color:#f0ebe2;line-height:1.15;margin-top:1.25rem">
+        Thirty-one rooms.<br>Each one irreplaceable.
+      </h2>
     </div>
-    <div class="three-col">
-      <div class="card">
-        <div class="card-img">🛏️<span class="card-tag">Most Popular</span></div>
-        <div class="card-body">
-          <p class="card-type">Four-Poster Suite</p>
-          <h3 class="card-title">Rye Royal</h3>
-          <p class="card-desc">Our grandest chamber — a carved four-poster bed, original Tudor beams, and views over the cobbled streets of Rye. History sleeps here.</p>
-          <a href="https://www.mermaidinn.com/room/rye-royal/" target="_blank" class="card-link">View Room →</a>
-        </div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <div class="room-num">01</div>
+        <div class="room-type">Four-Poster Suite</div>
+        <div class="room-name">Rye Royal</div>
+        <p class="room-desc">Our grandest chamber — a hand-carved four-poster bed, original Tudor beams, and views across the cobbled streets of Rye. History sleeps here.</p>
+        <a href="https://www.mermaidinn.com/room/rye-royal/" target="_blank" class="room-link">View room</a>
       </div>
-      <div class="card">
-        <div class="card-img">⚜️<span class="card-tag">Romantic</span></div>
-        <div class="card-body">
-          <p class="card-type">Deluxe Double</p>
-          <h3 class="card-title">Fleur de Lys</h3>
-          <p class="card-desc">Named for the French heraldic symbol, this room marries continental elegance with quintessentially English comfort and period oak panelling.</p>
-          <a href="https://www.mermaidinn.com/room/fleur-de-lys/" target="_blank" class="card-link">View Room →</a>
-        </div>
+      <div class="room-card">
+        <div class="room-num">02</div>
+        <div class="room-type">Deluxe Double</div>
+        <div class="room-name">Fleur de Lys</div>
+        <p class="room-desc">Named for the French heraldic symbol, this room marries continental grace with English warmth — period oak panelling, deep-set windows, and genuine quiet.</p>
+        <a href="https://www.mermaidinn.com/room/fleur-de-lys/" target="_blank" class="room-link">View room</a>
       </div>
-      <div class="card">
-        <div class="card-img">🗝️<span class="card-tag">Historic</span></div>
-        <div class="card-body">
-          <p class="card-type">Classic Double</p>
-          <h3 class="card-title">The Smugglers' Rest</h3>
-          <p class="card-desc">Legend has it the Hawkhurst Gang once sheltered here. Sloping ceilings, creaking floorboards, and an atmosphere thick with intrigue.</p>
-          <a href="https://www.mermaidinn.com" target="_blank" class="card-link">View Room →</a>
-        </div>
+      <div class="room-card">
+        <div class="room-num">03</div>
+        <div class="room-type">Classic Double</div>
+        <div class="room-name">The Hawkhurst</div>
+        <p class="room-desc">Sloping ceilings, creaking floorboards, an atmosphere thick with centuries. Legend has it the smugglers once sheltered in the very chamber you now call your own.</p>
+        <a href="https://www.mermaidinn.com" target="_blank" class="room-link">View room</a>
       </div>
     </div>
-    <div class="view-all">
-      <a href="https://www.mermaidinn.com" target="_blank" class="btn-outline-gold">View All 31 Rooms</a>
+    <div class="rooms-foot">
+      <a href="https://www.mermaidinn.com" target="_blank" class="btn btn-line" style="color:rgba(240,235,226,.5);border-color:rgba(240,235,226,.2)">Browse all 31 rooms</a>
     </div>
   </div>
 </section>
 
+<!-- PULL QUOTE -->
+<div class="pull-quote-wrap">
+  <div class="pull-quote">
+    <span class="rule rule-center" style="margin-bottom:2rem"></span>
+    <blockquote>"Sloping ceilings, creaking floorboards, and the gentle creak of centuries underfoot — a place that has no need to manufacture atmosphere."</blockquote>
+    <cite>The Times Travel</cite>
+  </div>
+</div>
+
 <!-- DINING -->
-<section class="dining-bg" id="dining">
-  <div class="container two-col">
-    <div style="position:relative">
-      <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=700&q=80" alt="The Linen Fold restaurant" class="dining-img">
-      <div class="rosette-badge">
-        <div class="rosette-title">2 AA Rosettes</div>
-        <div class="rosette-sub">Restaurant Excellence</div>
+<section class="section" id="dining">
+  <div class="wrap">
+    <div class="dining-grid">
+      <div class="dining-img-wrap">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=900&q=85" alt="The Linen Fold Restaurant">
+        <div class="award-chip">
+          <div class="num">2</div>
+          <div class="lbl">AA Rosettes</div>
+        </div>
       </div>
-    </div>
-    <div>
-      <p class="section-eyebrow">Dining</p>
-      <h2 class="section-title">The Linen Fold<br><em style="color:#6b2737">Restaurant</em></h2>
-      <div class="gold-bar"></div>
-      <p class="body-text">Three wood-panelled rooms, candlelit and unhurried. The Linen Fold serves celebrated British and French cuisine, championing local produce from the land and sea around Rye.</p>
-      <div class="quote-block">"Winchelsea beef, Romney Marsh lamb, Rye Bay scallops — the best of East Sussex, right on your plate."</div>
-      <div class="tags">
-        <span class="tag">Breakfast</span>
-        <span class="tag">Lunch</span>
-        <span class="tag">Dinner</span>
-        <span class="tag">Sunday Roast</span>
+      <div class="dining-text">
+        <p class="eyebrow">Dining</p>
+        <h2>The Linen Fold<br><em>Restaurant</em></h2>
+        <p>Three wood-panelled rooms, candlelit and unhurried. The Linen Fold serves celebrated British and French cuisine built around the finest local produce — Winchelsea beef, Romney Marsh lamb, Rye Bay scallops.</p>
+        <p>Awarded 2 AA Rosettes, our kitchen balances classic technique with the honest flavours of East Sussex. Breakfast through dinner, seven days a week.</p>
+        <div class="menu-row">
+          <span class="menu-pill">Breakfast</span>
+          <span class="menu-pill">Lunch</span>
+          <span class="menu-pill">Dinner</span>
+          <span class="menu-pill">Sunday Roast</span>
+        </div>
+        <a href="https://www.mermaidinn.com" target="_blank" class="btn btn-fill">Reserve a Table</a>
       </div>
-      <a href="https://www.mermaidinn.com" target="_blank" class="btn-burgundy">Reserve a Table</a>
     </div>
   </div>
 </section>
 
 <!-- EXPERIENCES -->
-<section class="exp-bg" id="experiences">
-  <div class="container">
-    <div class="section-center" style="margin-bottom:4rem">
-      <p class="section-eyebrow">Beyond the Room</p>
-      <h2 class="section-title section-title-light">Experiences &amp; Spaces</h2>
+<section class="section section-mid" id="experiences">
+  <div class="wrap">
+    <div class="exp-header">
+      <p class="eyebrow">Beyond the room</p>
+      <h2 class="exp-header h2" style="font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4vw,3.4rem);font-weight:300;color:#f0ebe2;margin-top:1.25rem;line-height:1.15">
+        Spaces with soul
+      </h2>
     </div>
-    <div class="four-col">
-      <div class="exp-card">
-        <div class="exp-icon">🏰</div>
-        <h3 class="exp-title">Guided History Tours</h3>
-        <p class="exp-desc">Every last Sunday of the month, owner Judith Blincow leads guests through 600 years of secrets — tunnels, smugglers and all.</p>
+    <div class="exp-grid">
+      <div class="exp-item">
+        <div class="exp-num">01</div>
+        <div class="exp-title">Giants Fireplace Bar</div>
+        <p class="exp-desc">One of England's most dramatic inglenook fireplaces, surrounded by centuries-old stone. A glass of local wine, an open fire, and nowhere better to be on a winter evening.</p>
       </div>
-      <div class="exp-card">
-        <div class="exp-icon">🍷</div>
-        <h3 class="exp-title">Giants Fireplace Bar</h3>
-        <p class="exp-desc">Gather around one of England's most dramatic inglenook fireplaces with a glass of local wine or a craft ale from the Sussex coast.</p>
+      <div class="exp-item">
+        <div class="exp-num">02</div>
+        <div class="exp-title">Guided History Tours</div>
+        <p class="exp-desc">On the last Sunday of every month, owner Judith Blincow leads guests through 600 years of secrets — smugglers' tunnels, hidden chambers, and untold stories.</p>
       </div>
-      <div class="exp-card">
-        <div class="exp-icon">🌿</div>
-        <h3 class="exp-title">Walled Patio Garden</h3>
-        <p class="exp-desc">Step outside into our hidden courtyard — a sun-drenched retreat surrounded by centuries-old stone walls and climbing roses.</p>
+      <div class="exp-item">
+        <div class="exp-num">03</div>
+        <div class="exp-title">Tudor Bar</div>
+        <p class="exp-desc">An oak-panelled bar unchanged for centuries. Order something local, find a corner, and let the atmosphere do the rest.</p>
       </div>
-      <div class="exp-card">
-        <div class="exp-icon">🎭</div>
-        <h3 class="exp-title">Tudor Bar</h3>
-        <p class="exp-desc">A convivial oak-panelled bar unchanged for centuries. Perfect for a quiet nightcap or a spirited evening with new friends.</p>
+      <div class="exp-item">
+        <div class="exp-num">04</div>
+        <div class="exp-title">Walled Patio Garden</div>
+        <p class="exp-desc">A private courtyard of ancient stone and climbing roses, hidden from the street. The perfect place to take a moment on a warm Sussex afternoon.</p>
       </div>
     </div>
   </div>
@@ -327,102 +555,86 @@
 
 <!-- GALLERY -->
 <div class="gallery">
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Historic hotel exterior"></div>
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80" alt="Four-poster bedroom"></div>
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Fine dining restaurant"></div>
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80" alt="Bar with wine"></div>
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1543968996-ee822b8176ba?w=800&q=80" alt="English countryside"></div>
-  <div class="gal-item"><img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&q=80" alt="Scallop dish"></div>
+  <div class="g1"><img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=900&q=80" alt="Inn exterior"></div>
+  <div><img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=700&q=80" alt="Four-poster bedroom"></div>
+  <div><img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&q=80" alt="Bar"></div>
+  <div><img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=700&q=80" alt="Dining"></div>
+  <div><img src="https://images.unsplash.com/photo-1543968996-ee822b8176ba?w=700&q=80" alt="Countryside"></div>
 </div>
 
 <!-- TESTIMONIALS -->
-<section class="test-bg">
-  <div class="container">
-    <div class="section-center">
-      <p class="section-eyebrow">Guest Stories</p>
-      <h2 class="section-title">What Our Guests Say</h2>
+<section class="section section-cream">
+  <div class="wrap" style="margin-bottom:3rem">
+    <p class="eyebrow" style="text-align:center;margin-bottom:1rem">Guest Voices</p>
+  </div>
+  <div class="test-grid">
+    <div class="test-card">
+      <p class="test-quote">"Staying at The Mermaid felt like stepping into another century. The four-poster bed, the creaking floorboards — extraordinary."</p>
+      <div class="test-sep"></div>
+      <p class="test-author">Sophie T. — London</p>
     </div>
-    <div class="three-col">
-      <div class="test-card">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">Staying at The Mermaid felt like stepping into another century. The four-poster bed, the creaking floorboards, the fireplace — extraordinary.</p>
-        <div class="author-row">
-          <div class="author-avatar">S</div>
-          <div><div class="author-name">Sophie T.</div><div class="author-loc">London</div></div>
-        </div>
-      </div>
-      <div class="test-card">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">The Linen Fold restaurant is a genuine gem. The Rye Bay scallops were the best I've had anywhere in England.</p>
-        <div class="author-row">
-          <div class="author-avatar">J</div>
-          <div><div class="author-name">James M.</div><div class="author-loc">Edinburgh</div></div>
-        </div>
-      </div>
-      <div class="test-card">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">A place with real soul. The history tour through the smugglers' tunnels alone is worth the trip.</p>
-        <div class="author-row">
-          <div class="author-avatar">C</div>
-          <div><div class="author-name">Clara B.</div><div class="author-loc">Paris</div></div>
-        </div>
-      </div>
+    <div class="test-card">
+      <p class="test-quote">"The Linen Fold is a genuine gem. The Rye Bay scallops were the finest I have had anywhere in England."</p>
+      <div class="test-sep"></div>
+      <p class="test-author">James M. — Edinburgh</p>
+    </div>
+    <div class="test-card">
+      <p class="test-quote">"A place with real soul. The smugglers' tunnel tour alone is worth the journey from Paris."</p>
+      <div class="test-sep"></div>
+      <p class="test-author">Clara B. — Paris</p>
     </div>
   </div>
 </section>
 
-<!-- BOOKING BANNER -->
-<div class="banner">
-  <p class="banner-eyebrow">Begin Your Stay</p>
-  <h2>Six Centuries of Welcome.<br><em>Your Chapter Awaits.</em></h2>
-  <p>Free parking, complimentary Wi-Fi, and history in every room. Book directly for the best rate.</p>
-  <div class="banner-btns">
-    <a href="https://www.mermaidinn.com" target="_blank" class="btn-primary">Check Availability</a>
-    <a href="tel:+441797223065" class="btn-ghost">Call Us</a>
+<!-- CTA BAND -->
+<div class="cta-band">
+  <p class="eyebrow">Begin Your Stay</p>
+  <h2>Your chapter<br><em style="font-style:italic">awaits.</em></h2>
+  <p>Free parking · Complimentary Wi-Fi · Best rate guaranteed direct</p>
+  <div class="cta-actions">
+    <a href="https://www.mermaidinn.com" target="_blank" class="btn btn-fill">Check Availability</a>
+    <a href="tel:+441797223065" class="btn btn-line" style="color:rgba(240,235,226,.5);border-color:rgba(240,235,226,.2)">+44 (0)1797 223 065</a>
   </div>
 </div>
 
 <!-- FOOTER -->
-<footer class="footer" id="contact">
+<footer id="contact">
   <div class="footer-grid">
     <div>
-      <div class="footer-logo">The Mermaid Inn</div>
-      <div class="footer-logo-sub">Est. 1420</div>
-      <p class="footer-text">One of England's oldest and most storied inns, standing proudly in the ancient town of Rye since 1420.</p>
+      <div class="f-brand">The Mermaid Inn</div>
+      <div class="f-sub">Est. 1420 · Rye</div>
+      <p class="f-desc">One of England's oldest inns — standing on Mermaid Street in the ancient Cinque Port town of Rye, East Sussex, since 1420.</p>
     </div>
     <div>
-      <h4>Find Us</h4>
-      <div class="footer-addr">
-        <p>Mermaid Street</p>
-        <p>Rye, East Sussex TN31 7EY</p>
-        <p style="margin-top:1rem"><a href="tel:+441797223065">+44 (0)1797 223 065</a></p>
-        <p><a href="mailto:info@mermaidinn.com">info@mermaidinn.com</a></p>
+      <h4>Address</h4>
+      <div class="f-links">
+        <a href="https://maps.google.com/?q=Mermaid+Inn+Rye" target="_blank">Mermaid Street</a>
+        <a href="https://maps.google.com/?q=Mermaid+Inn+Rye" target="_blank">Rye, East Sussex</a>
+        <a href="https://maps.google.com/?q=Mermaid+Inn+Rye" target="_blank">TN31 7EY</a>
       </div>
     </div>
     <div>
-      <h4>Explore</h4>
-      <div class="footer-links">
-        <a href="#rooms">Rooms</a>
-        <a href="#dining">Dining</a>
+      <h4>Contact</h4>
+      <div class="f-links">
+        <a href="tel:+441797223065">+44 (0)1797 223 065</a>
+        <a href="mailto:info@mermaidinn.com">info@mermaidinn.com</a>
+        <a href="https://www.mermaidinn.com" target="_blank">mermaidinn.com</a>
+      </div>
+    </div>
+    <div>
+      <h4>Navigate</h4>
+      <div class="f-links">
         <a href="#history">History</a>
+        <a href="#rooms">Rooms &amp; Suites</a>
+        <a href="#dining">Dining</a>
         <a href="#experiences">Experiences</a>
-        <a href="https://www.mermaidinn.com" target="_blank">Book a Room</a>
-      </div>
-    </div>
-    <div>
-      <h4>Good to Know</h4>
-      <div class="footer-amens">
-        <p>✓ Free parking on-site</p>
-        <p>✓ Complimentary Wi-Fi</p>
-        <p>✓ Monthly history tours</p>
-        <p>✓ Events &amp; function rooms</p>
-        <p>✓ Walled patio garden</p>
+        <a href="https://www.mermaidinn.com" target="_blank">Book Direct</a>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
     <p>© 2026 The Mermaid Inn, Rye. All rights reserved.</p>
-    <p>Mermaid Street, Rye, East Sussex TN31 7EY</p>
+    <p>Mermaid Street · Rye · East Sussex · TN31 7EY</p>
   </div>
 </footer>
 
