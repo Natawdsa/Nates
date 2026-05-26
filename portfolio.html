@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nathan Paine — Web Designer</title>
+  <meta name="description" content="Nathan Paine — web designer exploring typography, layout, and interaction design through concept projects." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       TOKENS
+       ============================================================ */
+    :root {
+      --bg:      #F8F6F2;
+      --white:   #FFFFFF;
+      --black:   #111111;
+      --mid:     #666666;
+      --faint:   #CCCCCC;
+      --rule:    #E0DDD7;
+      --hover-bg:#F0EBE3;
+      --accent:  #B8935A;
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', system-ui, sans-serif;
+
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+    ::selection { background: var(--accent); color: var(--white); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ============================================================
+       REVEAL
+       ============================================================ */
+    .rv {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+    .rv.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ============================================================
+       NAV
+       ============================================================ */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 4rem;
+    }
+    .nav-name {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--black);
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mid);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--black); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--black);
+      transition: all 0.3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--bg);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 2.5rem;
+      color: var(--black);
+      font-weight: 300;
+    }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    #hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      padding: 6rem 4rem;
+      max-width: 900px;
+    }
+    .hero-inner { }
+    .hero-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    .hero-heading {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 1.05;
+      color: var(--black);
+      margin-bottom: 1.75rem;
+    }
+    .hero-sub {
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--mid);
+      max-width: 400px;
+      line-height: 1.65;
+    }
+
+    /* ============================================================
+       WORK
+       ============================================================ */
+    #work {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--rule);
+    }
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 3rem;
+      display: block;
+    }
+    .work-list { list-style: none; }
+    .work-item {
+      border-bottom: 1px solid var(--rule);
+      padding: 2.5rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 3rem;
+      transition: background 0.25s;
+      margin: 0 -2rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
+      border-radius: 4px;
+    }
+    .work-item:hover { background: var(--hover-bg); }
+    .work-num {
+      font-size: 0.72rem;
+      color: var(--faint);
+      font-weight: 400;
+      min-width: 24px;
+      margin-top: 0.5rem;
+    }
+    .work-content { flex: 1; }
+    .work-tags {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .work-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--mid);
+      border: 1px solid var(--faint);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+    .work-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: var(--black);
+      margin-bottom: 0.75rem;
+    }
+    .work-desc {
+      font-size: 0.9rem;
+      color: var(--mid);
+      font-weight: 300;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 1.25rem;
+    }
+    .work-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      font-weight: 400;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .work-link:hover { color: var(--accent); border-color: var(--accent); }
+    .work-link svg {
+      width: 12px;
+      height: 12px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ============================================================
+       ABOUT
+       ============================================================ */
+    #about {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--rule);
+      max-width: 660px;
+    }
+    .about-heading {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+    .about-body {
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--mid);
+      line-height: 1.8;
+    }
+
+    /* ============================================================
+       CONTACT
+       ============================================================ */
+    #contact {
+      padding: 5rem 4rem;
+      border-top: 1px solid var(--rule);
+    }
+    .contact-heading {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+    }
+    .contact-sub {
+      font-size: 0.9rem;
+      color: var(--mid);
+      margin-bottom: 1.75rem;
+      font-weight: 300;
+    }
+    .contact-email {
+      display: inline-block;
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .contact-email:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      border-top: 1px solid var(--rule);
+      padding: 1.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--mid);
+    }
+    .footer-note {
+      font-size: 0.75rem;
+      color: var(--faint);
+      font-style: italic;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+      nav { padding: 1.1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      #hero { padding: 4rem 1.5rem; min-height: 55vh; }
+      #work { padding: 3.5rem 1.5rem; }
+      .work-item { gap: 1.25rem; margin: 0 -0.5rem; padding-left: 0.5rem; padding-right: 0.5rem; }
+      #about { padding: 3.5rem 1.5rem; }
+      #contact { padding: 3.5rem 1.5rem; }
+      footer { padding: 1.25rem 1.5rem; flex-direction: column; gap: 0.4rem; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-name">Nathan Paine</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="hero-inner">
+      <span class="hero-label rv">Web Designer</span>
+      <h1 class="hero-heading rv" style="transition-delay:0.1s">
+        Clean, considered<br>websites.
+      </h1>
+      <p class="hero-sub rv" style="transition-delay:0.2s">
+        Exploring design through concept projects — typography, layout, and interaction.
+      </p>
+    </div>
+  </section>
+
+  <!-- Work -->
+  <section id="work">
+    <span class="section-label rv">Selected Work</span>
+    <ul class="work-list">
+
+      <!-- Project 01 -->
+      <li class="work-item rv" style="transition-delay:0.05s">
+        <span class="work-num">01</span>
+        <div class="work-content">
+          <div class="work-tags">
+            <span class="work-tag">Hotel</span>
+            <span class="work-tag">Concept</span>
+          </div>
+          <h2 class="work-title">The Mermaid Inn</h2>
+          <p class="work-desc">
+            A concept redesign for a historic inn. Exploring complex UI — custom cursor, parallax hero, draggable room carousels, and a ghost particle system.
+          </p>
+          <a href="mermaidinn.html" target="_blank" rel="noopener" class="work-link">
+            View Project
+            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+          </a>
+        </div>
+      </li>
+
+      <!-- Project 02 -->
+      <li class="work-item rv" style="transition-delay:0.1s">
+        <span class="work-num">02</span>
+        <div class="work-content">
+          <div class="work-tags">
+            <span class="work-tag">Restaurant</span>
+            <span class="work-tag">Concept</span>
+          </div>
+          <h2 class="work-title">Landgate Bistro</h2>
+          <p class="work-desc">
+            A minimal dark site for a fine dining restaurant. Focused on typography, restraint, and a Michelin-inspired aesthetic with a tabbed menu system.
+          </p>
+          <a href="index.html" target="_blank" rel="noopener" class="work-link">
+            View Project
+            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+          </a>
+        </div>
+      </li>
+
+      <!-- Project 03 -->
+      <li class="work-item rv" style="transition-delay:0.15s">
+        <span class="work-num">03</span>
+        <div class="work-content">
+          <div class="work-tags">
+            <span class="work-tag">Café</span>
+            <span class="work-tag">Concept</span>
+          </div>
+          <h2 class="work-title">Ground Up Coffee</h2>
+          <p class="work-desc">
+            A warm editorial site for an independent coffee shop. Earth tones, marquee ticker, printed menu layout, and a community-first feel.
+          </p>
+          <a href="groundup.html" target="_blank" rel="noopener" class="work-link">
+            View Project
+            <svg viewBox="0 0 16 16"><line x1="3" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+          </a>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <span class="section-label rv">About</span>
+    <h2 class="about-heading rv" style="transition-delay:0.05s">Learning by building.</h2>
+    <p class="about-body rv" style="transition-delay:0.1s">
+      I'm Nathan Paine — new to web design and teaching myself by building concept projects. The sites here explore different approaches to typography, layout, colour, and interaction. Each one is a chance to try something new and figure out what works.<br><br>
+      Based in East Sussex, open to feedback and collaboration.
+    </p>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <span class="section-label rv">Contact</span>
+    <h2 class="contact-heading rv" style="transition-delay:0.05s">Get in touch.</h2>
+    <p class="contact-sub rv" style="transition-delay:0.1s">Open to feedback, collaboration, or just a chat.</p>
+    <a href="mailto:painenathan7@gmail.com" class="contact-email rv" style="transition-delay:0.15s">
+      painenathan7@gmail.com
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-copy">© 2025 Nathan Paine</span>
+    <span class="footer-note">Concept projects — work in progress</span>
+  </footer>
+
+  <script>
+    (function () {
+
+      // Scroll reveal
+      const revealObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            revealObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.rv').forEach(el => revealObs.observe(el));
+
+      // Hamburger
+      const hamburger = document.getElementById('hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+      });
+
+      // Close mobile menu on link click
+      document.querySelectorAll('.mobile-link').forEach(a => {
+        a.addEventListener('click', () => {
+          hamburger.classList.remove('open');
+          mobileMenu.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const target = document.querySelector(a.getAttribute('href'));
+          if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        });
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
