@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ground Up — Coffee & Community, Rye</title>
+  <meta name="description" content="Rye's independent coffee shop and community hub. Specialty coffee, great people, 86 Fishmarket Road." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --c:   #F4EDD8;   /* cream */
+      --cw:  #EDE0C4;   /* cream warm */
+      --ol:  #3D4A30;   /* olive */
+      --olm: #526242;   /* olive mid */
+      --olp: #8A9478;   /* olive pale */
+      --esp: #16100A;   /* espresso */
+      --brn: #2A1A0C;   /* brown */
+      --gld: #AA8040;   /* gold */
+      --tx:  #18100A;   /* text dark */
+      --txm: #5C4638;   /* text mid */
+      --txf: #9C8A78;   /* text faint */
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--c);
+      color: var(--tx);
+      overflow-x: hidden;
+    }
+
+    /* ─── Noise grain ─── */
+    .grain::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 300px;
+      opacity: 0.55;
+      mix-blend-mode: overlay;
+    }
+
+    /* ─── Reveal ─── */
+    .rv { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
+    .rv.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .rv { opacity:1; transform:none; transition:none; } }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 2rem 3rem;
+      transition: padding .4s, background .5s, backdrop-filter .5s;
+    }
+    nav.solid {
+      padding: 1.1rem 3rem;
+      background: rgba(22,16,10,.91);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 500; font-style: italic;
+      color: var(--c); text-decoration: none; letter-spacing: .01em;
+    }
+    .nav-logo b { font-style: normal; font-weight: 700; }
+    .nav-r { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-r a {
+      font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(244,237,216,.5); text-decoration: none; transition: color .2s;
+    }
+    .nav-r a:hover { color: var(--c); }
+    .nav-r .nav-call {
+      color: var(--gld); border-bottom: 1px solid rgba(170,128,64,.35);
+      padding-bottom: 1px; transition: border-color .2s;
+    }
+    .nav-r .nav-call:hover { border-color: var(--gld); }
+
+    /* hamburger */
+    .ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .ham span { display: block; width: 22px; height: 1.5px; background: var(--c); }
+    .mob { display: none; position: fixed; inset: 0; z-index: 99; background: var(--esp); flex-direction: column; align-items: flex-start; justify-content: flex-end; padding: 3rem; gap: 1.5rem; }
+    .mob.open { display: flex; }
+    .mob-close { position: absolute; top: 2rem; right: 2.5rem; background: none; border: none; color: rgba(244,237,216,.4); font-size: 1.5rem; cursor: pointer; }
+    .mob a { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 400; font-style: italic; color: var(--c); text-decoration: none; line-height: 1.1; transition: color .2s; }
+    .mob a:hover { color: var(--gld); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.5rem 1.5rem; }
+      nav.solid { padding: 1rem 1.5rem; }
+      .nav-r { display: none; }
+      .ham { display: flex; }
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    .hero-photo {
+      position: absolute; inset: 0;
+      background: url('img-espresso.jpg') center 40% / cover no-repeat,
+                  url('https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=1600&q=80&sat=-20') center 40% / cover no-repeat;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(
+        160deg,
+        rgba(14,9,4,.82) 0%,
+        rgba(30,20,8,.60) 45%,
+        rgba(20,14,6,.75) 100%
+      );
+    }
+
+    .hero-main {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+      padding: 10rem 3rem 3rem;
+      align-items: flex-end;
+    }
+    .hero-type {}
+    .hero-city {
+      font-size: .68rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(244,237,216,.35); margin-bottom: 1.8rem;
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      line-height: .9; letter-spacing: -.03em;
+    }
+    .h1-a {
+      display: block;
+      font-size: clamp(5.5rem, 14vw, 13rem);
+      font-weight: 700;
+      color: var(--c);
+    }
+    .h1-b {
+      display: block;
+      font-size: clamp(2.8rem, 6.5vw, 6rem);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--gld);
+      margin-left: .08em;
+    }
+
+    .hero-col {
+      padding-bottom: .5rem;
+      display: flex; flex-direction: column; justify-content: flex-end; gap: 1.4rem;
+    }
+    .hero-col p {
+      font-size: .97rem; font-weight: 300; line-height: 1.75;
+      color: rgba(244,237,216,.6); max-width: 340px;
+    }
+    .hero-col p em { font-style: italic; color: rgba(244,237,216,.85); }
+    .hero-link {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-size: .72rem; font-weight: 500; letter-spacing: .13em; text-transform: uppercase;
+      color: var(--gld); text-decoration: none;
+      border-bottom: 1px solid rgba(170,128,64,.35); padding-bottom: 2px;
+      transition: border-color .2s; width: fit-content;
+    }
+    .hero-link:hover { border-color: var(--gld); }
+    .hero-link svg { width: 12px; height: 12px; }
+
+    /* Ticker */
+    .ticker {
+      position: relative; z-index: 2;
+      border-top: 1px solid rgba(244,237,216,.1);
+      padding: 1.1rem 0;
+      overflow: hidden;
+    }
+    .ticker-track {
+      display: flex;
+      animation: tick 28s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-track span {
+      font-size: .65rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(244,237,216,.3); padding: 0 2rem;
+      flex-shrink: 0;
+    }
+    .ticker-track span.dot { color: var(--gld); opacity: .5; padding: 0; }
+    @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+    @media (max-width: 860px) {
+      .hero-main { grid-template-columns: 1fr; padding: 8rem 1.5rem 2.5rem; gap: 2rem; }
+      .hero-col p { max-width: none; }
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--c);
+      padding: 9rem 3rem 8rem;
+    }
+    .about-in { max-width: 1080px; margin: 0 auto; }
+    .about-kicker {
+      font-size: .65rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--txf); margin-bottom: 3.5rem; display: block;
+    }
+    .about-pull {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4.5vw, 3.6rem);
+      font-weight: 400; font-style: italic;
+      color: var(--tx); line-height: 1.22; letter-spacing: -.01em;
+      max-width: 820px; margin-bottom: 5rem;
+    }
+    .about-pull em { font-style: normal; color: var(--ol); }
+    .about-cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      padding-top: 3.5rem;
+      border-top: 1px solid var(--cw);
+    }
+    .about-cols p {
+      font-size: .97rem; font-weight: 300; line-height: 1.85;
+      color: var(--txm); margin-bottom: 1.1rem;
+    }
+    .about-cols p:last-child { margin-bottom: 0; }
+    .about-cols strong { font-weight: 500; color: var(--tx); }
+    .about-sig {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid rgba(0,0,0,.07);
+    }
+    .about-sig small {
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--txf);
+    }
+    .about-sig strong {
+      display: block; font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-style: italic; font-weight: 400;
+      color: var(--tx); margin-top: .3rem;
+    }
+    @media (max-width: 768px) {
+      #about { padding: 6rem 1.5rem 5rem; }
+      .about-cols { grid-template-columns: 1fr; gap: 0; }
+    }
+
+    /* ─── MENU ─── */
+    #menu {
+      background: var(--esp);
+      padding: 8rem 3rem;
+    }
+    .menu-in { max-width: 1080px; margin: 0 auto; }
+    .menu-top {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 2rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(244,237,216,.1);
+      margin-bottom: 5rem;
+    }
+    .menu-top h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 500; letter-spacing: -.025em; line-height: .95;
+      color: var(--c);
+    }
+    .menu-top-note {
+      font-size: .78rem; font-weight: 300;
+      color: rgba(244,237,216,.25);
+      text-align: right; max-width: 220px; line-height: 1.65;
+    }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; }
+    .menu-col {}
+    .menu-cat {
+      margin-bottom: 3.5rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(244,237,216,.07);
+    }
+    .menu-cat:last-child { border-bottom: none; margin-bottom: 0; }
+    .cat-label {
+      font-size: .6rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--gld); opacity: .8;
+      margin-bottom: 1.6rem; display: block;
+    }
+    .menu-item { margin-bottom: 1.8rem; }
+    .menu-item:last-child { margin-bottom: 0; }
+    .mi-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem; font-weight: 400;
+      color: var(--c); margin-bottom: .3rem; line-height: 1.2;
+    }
+    .mi-desc {
+      font-size: .85rem; font-weight: 300; line-height: 1.6;
+      color: rgba(244,237,216,.38);
+    }
+    .menu-footnote {
+      margin-top: 4rem; padding-top: 2rem;
+      border-top: 1px solid rgba(244,237,216,.07);
+      font-size: .78rem; font-weight: 300; font-style: italic;
+      color: rgba(244,237,216,.2); line-height: 1.6;
+    }
+    @media (max-width: 768px) {
+      #menu { padding: 6rem 1.5rem; }
+      .menu-grid { grid-template-columns: 1fr; gap: 0; }
+      .menu-top { flex-direction: column; gap: .75rem; }
+      .menu-top-note { text-align: left; }
+    }
+
+    /* ─── PHOTO STRIP ─── */
+    .photo-strip {
+      width: 100%; height: 480px; overflow: hidden; display: block;
+      background: var(--brn);
+    }
+    .photo-strip img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 28%;
+      display: block;
+      filter: brightness(.92) saturate(.88);
+    }
+    @media (max-width: 768px) { .photo-strip { height: 300px; } }
+
+    /* ─── VIBE ─── */
+    #vibe {
+      background: var(--ol);
+    }
+    .vibe-split {
+      display: grid;
+      grid-template-columns: 1fr 42%;
+      min-height: 600px;
+    }
+    .vibe-left {
+      padding: 7rem 4rem 7rem 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .vibe-right {
+      overflow: hidden; position: relative;
+    }
+    .vibe-right img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 20%;
+      display: block;
+      filter: brightness(.85) saturate(.9);
+    }
+    .vibe-q {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.7rem);
+      font-weight: 400; font-style: italic;
+      color: var(--c); line-height: 1.4; letter-spacing: -.01em;
+      max-width: 560px;
+    }
+    .vibe-q em { font-style: normal; color: rgba(244,237,216,.5); }
+    .vibe-row {
+      display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgba(244,237,216,.12);
+    }
+    .vibe-tag {
+      display: flex; align-items: center; gap: .55rem;
+      font-size: .75rem; font-weight: 400; letter-spacing: .06em;
+      color: rgba(244,237,216,.45);
+    }
+    .vibe-tag svg { width: 13px; height: 13px; color: var(--gld); opacity: .75; flex-shrink: 0; }
+    @media (max-width: 900px) {
+      .vibe-split { grid-template-columns: 1fr; }
+      .vibe-right { height: 320px; }
+      .vibe-left { padding: 5rem 1.5rem; }
+    }
+
+    /* ─── EVENTS ─── */
+    #events {
+      background: var(--c);
+      padding: 8rem 3rem;
+    }
+    .events-in { max-width: 1080px; margin: 0 auto; }
+    .events-kicker {
+      font-size: .65rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--txf); display: block; margin-bottom: 4rem;
+    }
+    .ev-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 180px;
+      gap: 2.5rem; align-items: start;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--cw);
+      transition: padding-left .25s ease;
+      cursor: default;
+    }
+    .ev-row:last-of-type { border-bottom: 1px solid var(--cw); }
+    .ev-row:hover { padding-left: 1rem; }
+    .ev-n {
+      font-family: 'Playfair Display', serif;
+      font-size: .85rem; font-style: italic; color: var(--txf);
+      padding-top: .4rem;
+    }
+    .ev-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem; font-weight: 500;
+      color: var(--tx); margin-bottom: .45rem; letter-spacing: -.01em; line-height: 1.1;
+    }
+    .ev-desc {
+      font-size: .9rem; font-weight: 300; line-height: 1.6;
+      color: var(--txm);
+    }
+    .ev-meta { text-align: right; }
+    .ev-time {
+      font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--ol); white-space: nowrap; display: block;
+    }
+    .ev-status {
+      font-size: .7rem; font-weight: 300;
+      color: var(--txf); white-space: nowrap; display: block;
+      margin-top: .35rem; font-style: italic;
+    }
+    @media (max-width: 680px) {
+      #events { padding: 6rem 1.5rem; }
+      .ev-row { grid-template-columns: 40px 1fr; gap: 1.5rem; }
+      .ev-meta { display: none; }
+      .ev-desc::after { content: attr(data-when); display: block; margin-top: .5rem; font-style: italic; color: var(--ol); font-size: .78rem; }
+    }
+
+    /* ─── FIND US ─── */
+    #find {
+      background: var(--brn);
+      padding: 9rem 3rem 8rem;
+    }
+    .find-in { max-width: 1080px; margin: 0 auto; }
+    .find-top {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8rem;
+      margin-bottom: 5rem;
+    }
+    .find-h {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 400; line-height: 1.15; letter-spacing: -.02em;
+      color: var(--c); margin-bottom: 1.5rem;
+    }
+    .find-sub {
+      font-size: .92rem; font-weight: 300; line-height: 1.8;
+      color: rgba(244,237,216,.4); max-width: 360px;
+    }
+    .find-details { display: flex; flex-direction: column; }
+    .fd { padding: 1.5rem 0; border-bottom: 1px solid rgba(244,237,216,.08); }
+    .fd:first-child { border-top: 1px solid rgba(244,237,216,.08); }
+    .fd small {
+      font-size: .58rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gld); opacity: .7; display: block; margin-bottom: .35rem;
+    }
+    .fd span, .fd a {
+      font-size: .93rem; font-weight: 300;
+      color: rgba(244,237,216,.65); text-decoration: none; transition: color .2s;
+    }
+    .fd a:hover { color: var(--gld); }
+
+    /* Hours table */
+    .find-hours {
+      border-top: 1px solid rgba(244,237,216,.06);
+      padding-top: 3rem;
+    }
+    .fh-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-style: italic; font-weight: 400;
+      color: rgba(244,237,216,.35); margin-bottom: 2rem;
+    }
+    .fh-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: .9rem 0; border-bottom: 1px solid rgba(244,237,216,.05);
+      font-size: .88rem; font-weight: 300;
+    }
+    .fh-row:last-child { border-bottom: none; }
+    .fh-row span:first-child { color: rgba(244,237,216,.55); }
+    .fh-row span:last-child { color: rgba(244,237,216,.3); }
+    @media (max-width: 768px) {
+      #find { padding: 6rem 1.5rem; }
+      .find-top { grid-template-columns: 1fr; gap: 3rem; }
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--esp);
+      padding: 2.2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+      border-top: 1px solid rgba(244,237,216,.05);
+    }
+    .foot-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-style: italic; font-weight: 400;
+      color: rgba(244,237,216,.35); text-decoration: none;
+    }
+    footer small {
+      font-size: .68rem; letter-spacing: .06em;
+      color: rgba(244,237,216,.18);
+    }
+    .foot-links { display: flex; gap: 2rem; list-style: none; }
+    .foot-links a {
+      font-size: .68rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: rgba(244,237,216,.22); text-decoration: none; transition: color .2s;
+    }
+    .foot-links a:hover { color: rgba(244,237,216,.6); }
+    @media (max-width: 600px) {
+      footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+      .foot-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo"><b>Ground</b> Up</a>
+  <div class="nav-r">
+    <a href="#about">About</a>
+    <a href="#menu">Menu</a>
+    <a href="#events">Events</a>
+    <a href="#find">Find Us</a>
+    <a href="tel:07710153421" class="nav-call">07710 153 421</a>
+  </div>
+  <button class="ham" id="hamBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mob" id="mob" role="dialog" aria-modal="true">
+  <button class="mob-close" id="mobClose" aria-label="Close">&#x2715;</button>
+  <a href="#about" class="mob-l">About</a>
+  <a href="#menu" class="mob-l">Menu</a>
+  <a href="#events" class="mob-l">What's On</a>
+  <a href="#find" class="mob-l">Find Us</a>
+</div>
+
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-main">
+    <div class="hero-type rv">
+      <p class="hero-city">Rye, East Sussex</p>
+      <h1>
+        <span class="h1-a">Ground</span>
+        <span class="h1-b">Up.</span>
+      </h1>
+    </div>
+    <div class="hero-col rv" style="transition-delay:.15s">
+      <p>A coffee shop in Rye that actually <em>gives a damn</em> — about the beans, the people, and the town it calls home.</p>
+      <p>Founded by Esther. Built from scratch. Come as you are.</p>
+      <a href="#find" class="hero-link">
+        86 Fishmarket Rd
+        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 10L10 2M4 2h6v6"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Ticker -->
+  <div class="ticker">
+    <div class="ticker-track" aria-hidden="true">
+      <span>Specialty Coffee</span><span class="dot"> · </span>
+      <span>Rye Bay Beans</span><span class="dot"> · </span>
+      <span>Sussex Kitchen</span><span class="dot"> · </span>
+      <span>Dog Friendly</span><span class="dot"> · </span>
+      <span>Free Wi-Fi</span><span class="dot"> · </span>
+      <span>Community Hub</span><span class="dot"> · </span>
+      <span>Takeaway Available</span><span class="dot"> · </span>
+      <span>Parking Opposite</span><span class="dot"> · </span>
+      <span>Entrepreneur Meet-Ups</span><span class="dot"> · </span>
+      <span>Chess &amp; Yoga</span><span class="dot"> · </span>
+      <!-- duplicate for seamless loop -->
+      <span>Specialty Coffee</span><span class="dot"> · </span>
+      <span>Rye Bay Beans</span><span class="dot"> · </span>
+      <span>Sussex Kitchen</span><span class="dot"> · </span>
+      <span>Dog Friendly</span><span class="dot"> · </span>
+      <span>Free Wi-Fi</span><span class="dot"> · </span>
+      <span>Community Hub</span><span class="dot"> · </span>
+      <span>Takeaway Available</span><span class="dot"> · </span>
+      <span>Parking Opposite</span><span class="dot"> · </span>
+      <span>Entrepreneur Meet-Ups</span><span class="dot"> · </span>
+      <span>Chess &amp; Yoga</span><span class="dot"> · </span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="about-in">
+    <span class="about-kicker rv">Welcome — Ground Up, Rye</span>
+    <p class="about-pull rv" style="transition-delay:.1s">
+      "Built from <em>the ground up</em> — by one person, with one idea: that Rye deserved better coffee and a proper place to think."
+    </p>
+    <div class="about-cols">
+      <div class="rv">
+        <p>Esther opened Ground Up because she believed a town as alive as Rye deserved a coffee shop to match. Not a chain. Not a compromise. <strong>Something real.</strong></p>
+        <p>Every cup is made with local Rye Bay Coffee Beans, pulled to order. The food comes from the award-winning Sussex Kitchen. The teas are sourced properly. Nothing here is an afterthought.</p>
+        <div class="about-sig">
+          <small>Founded by</small>
+          <strong>Esther</strong>
+        </div>
+      </div>
+      <div class="rv" style="transition-delay:.15s">
+        <p>Ground Up isn't just a coffee shop — it's a room where things happen. Where the early risers plan their next move, where strangers become regulars, where the chess board is always set up.</p>
+        <p>Whether you're here for twenty minutes or the whole afternoon, <strong>you're welcome.</strong> Bring your dog. Bring your laptop. Just leave your bad mood at the door.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── PHOTO STRIP ─── -->
+<div class="photo-strip">
+  <img src="img-stall.jpg" alt="Ground Up Coffee — our stall at an event in Rye, showing the brand, Booyah drinks and fresh pastries"
+       onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1600&q=80&sat=-20'" />
+</div>
+
+<!-- ─── MENU ─── -->
+<section id="menu">
+  <div class="menu-in">
+    <div class="menu-top rv">
+      <h2>The Menu</h2>
+      <p class="menu-top-note">Everything sourced with care. Nothing from a box. Ask us if you're not sure.</p>
+    </div>
+    <div class="menu-grid">
+
+      <!-- Left col -->
+      <div>
+        <div class="menu-cat rv">
+          <span class="cat-label">Coffee</span>
+          <div class="menu-item">
+            <p class="mi-name">Specialty Espresso Drinks</p>
+            <p class="mi-desc">Brewed using local Rye Bay Coffee Beans. Flat white, cortado, latte, cappuccino, Americano. Every shot pulled to order.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Pour Over &amp; Filter</p>
+            <p class="mi-desc">For those who want to slow down. Ask us what's on today.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Oat, Almond &amp; Whole Milk</p>
+            <p class="mi-desc">All alternatives available. No surcharge for asking nicely.</p>
+          </div>
+        </div>
+
+        <div class="menu-cat rv" style="transition-delay:.1s">
+          <span class="cat-label">Something Different</span>
+          <div class="menu-item">
+            <p class="mi-name">Booyah</p>
+            <p class="mi-desc">Probiotic, natural, alive. A proper healthy drink from people who care about what they make.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Kombu Heritage</p>
+            <p class="mi-desc">Fermented kombucha, small-batch. Because sometimes you just don't want another coffee.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right col -->
+      <div>
+        <div class="menu-cat rv" style="transition-delay:.08s">
+          <span class="cat-label">Food</span>
+          <div class="menu-item">
+            <p class="mi-name">Sandwiches &amp; Toasties</p>
+            <p class="mi-desc">Made fresh from the award-winning Sussex Kitchen. Seasonal ingredients, proper bread, no sad triangles wrapped in plastic.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Pastries</p>
+            <p class="mi-desc">Daily. Croissants, pastries, the occasional thing that surprises you. Ask what's in today.</p>
+          </div>
+        </div>
+
+        <div class="menu-cat rv" style="transition-delay:.18s">
+          <span class="cat-label">Hot Drinks</span>
+          <div class="menu-item">
+            <p class="mi-name">Loose-Leaf Teas</p>
+            <p class="mi-desc">Locally sourced. Proper brewing time. Not a teabag dropped in hot water.</p>
+          </div>
+          <div class="menu-item">
+            <p class="mi-name">Hot Chocolate</p>
+            <p class="mi-desc">Rich, dark, and made to order. Not from a sachet.</p>
+          </div>
+        </div>
+
+        <p class="menu-footnote rv" style="transition-delay:.25s">
+          Menu changes with the seasons. Some things run out. That's what happens when you use real ingredients.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── VIBE ─── -->
+<section id="vibe">
+  <div class="vibe-split">
+    <div class="vibe-left">
+      <p class="vibe-q rv">
+        "Some days you need a good table, a flat white that doesn't disappoint, and <em>nobody asking if you're still using that chair.</em> That's what we're here for."
+      </p>
+      <div class="vibe-row rv" style="transition-delay:.2s">
+        <div class="vibe-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+          Free Wi-Fi
+        </div>
+        <div class="vibe-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.656 1 1.261-.472 1.96-1.45 2.344-2.5M14.267 5.172c0-1.39 1.577-2.493 3.5-2.172 2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.656 1-1.261-.472-1.855-1.45-2.239-2.5M8 14v.5A3.5 3.5 0 0 0 11.5 18v0a3.5 3.5 0 0 0 3.5-3.5V14M12 18v4M8 22h8"/></svg>
+          Dogs welcome
+        </div>
+        <div class="vibe-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Open from 7am weekdays
+        </div>
+        <div class="vibe-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          Parking opposite
+        </div>
+        <div class="vibe-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          Takeaway available
+        </div>
+      </div>
+    </div>
+    <div class="vibe-right">
+      <img src="img-latte.jpg" alt="Latte art being poured at Ground Up Coffee, Rye"
+           onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1485808191679-5f86510bd9d4?w=900&q=80&sat=-20'" />
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── EVENTS ─── -->
+<section id="events">
+  <div class="events-in">
+    <span class="events-kicker rv">What's on</span>
+
+    <div class="ev-row rv">
+      <span class="ev-n">01</span>
+      <div>
+        <p class="ev-name">Entrepreneur's Meet-Up</p>
+        <p class="ev-desc" data-when="1st Monday · 6am">Start the week with people who mean it. Local founders, freelancers, and anyone with something to build. Coffee on arrival, no agenda, no slides.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">1st Monday · 6am</span>
+        <span class="ev-status">Regular — all welcome</span>
+      </div>
+    </div>
+
+    <div class="ev-row rv" style="transition-delay:.1s">
+      <span class="ev-n">02</span>
+      <div>
+        <p class="ev-name">Chess</p>
+        <p class="ev-desc" data-when="Drop in anytime">The board's always set up. Come in, challenge a stranger, or just watch. All levels. No need to book.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">Drop in anytime</span>
+        <span class="ev-status">Ongoing</span>
+      </div>
+    </div>
+
+    <div class="ev-row rv" style="transition-delay:.2s">
+      <span class="ev-n">03</span>
+      <div>
+        <p class="ev-name">Sunrise Yoga</p>
+        <p class="ev-desc" data-when="Coming back soon">Our sunrise sessions are on a short break. Follow us on Instagram for the return date — it's coming back.</p>
+      </div>
+      <div class="ev-meta">
+        <span class="ev-time">Coming back soon</span>
+        <span class="ev-status">@groundup_coffeeshop</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ─── FIND US ─── -->
+<section id="find">
+  <div class="find-in">
+    <div class="find-top">
+      <div class="rv">
+        <h2 class="find-h">Come find<br>us in Rye.</h2>
+        <p class="find-sub">We're at 86 Fishmarket Road — by the famous Skinners Roundabout on the way to Camber Sands. Easy to find. Worth the walk.</p>
+      </div>
+      <div class="find-details rv" style="transition-delay:.15s">
+        <div class="fd">
+          <small>Address</small>
+          <span>86 Fishmarket Rd, Rye TN31 7LP</span>
+        </div>
+        <div class="fd">
+          <small>Phone</small>
+          <a href="tel:07710153421">07710 153 421</a>
+        </div>
+        <div class="fd">
+          <small>Email</small>
+          <a href="mailto:esther@groundupbusiness.co.uk">esther@groundupbusiness.co.uk</a>
+        </div>
+        <div class="fd">
+          <small>Instagram</small>
+          <a href="https://www.instagram.com/groundup_coffeeshop" target="_blank" rel="noopener">@groundup_coffeeshop</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="find-hours rv" style="transition-delay:.2s">
+      <p class="fh-title">Opening hours</p>
+      <div class="fh-row"><span>Monday – Friday</span><span>7am – 5pm</span></div>
+      <div class="fh-row"><span>Saturday</span><span>8am – 4pm</span></div>
+      <div class="fh-row"><span>Sunday</span><span>9am – 3pm</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <a href="#hero" class="foot-brand">Ground Up</a>
+  <small>© 2026 Ground Up Business. Built from the ground up.</small>
+  <ul class="foot-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#find">Find Us</a></li>
+  </ul>
+</footer>
+
+
+<script>
+  // Nav
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('solid', scrollY > 80), { passive: true });
+
+  // Mobile menu
+  const hamBtn = document.getElementById('hamBtn');
+  const mob = document.getElementById('mob');
+  const mobClose = document.getElementById('mobClose');
+  const open = () => { mob.classList.add('open'); document.body.style.overflow = 'hidden'; };
+  const close = () => { mob.classList.remove('open'); document.body.style.overflow = ''; };
+  hamBtn.addEventListener('click', open);
+  mobClose.addEventListener('click', close);
+  mob.querySelectorAll('.mob-l').forEach(l => l.addEventListener('click', close));
+
+  // Reveal
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const d = parseFloat(e.target.style.transitionDelay || 0) * 1000;
+          setTimeout(() => e.target.classList.add('in'), d);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+  } else {
+    document.querySelectorAll('.rv').forEach(el => el.classList.add('in'));
+  }
+</script>
+</body>
+</html>
