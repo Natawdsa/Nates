@@ -1,3 +1,8 @@
+---
+name: ui-ux
+description: Assist with UI/UX design decisions, component implementation, accessibility, and design system usage. Use when reviewing components for accessibility, making layouts responsive, improving visual design, adding dark mode support, or building UI components from a description.
+---
+
 # UI/UX Skill
 
 ## Purpose
