@@ -179,11 +179,36 @@ button:focus-visible {
 }
 
 .work-thumb {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-2);
   background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
   aspect-ratio: 4 / 3;
   border-radius: 2px;
   margin-bottom: var(--space-2);
+  overflow: hidden;
   transition: transform 0.5s var(--ease);
+}
+
+.work-thumb--landgate { background: linear-gradient(135deg, #141412, #3c3c38); }
+.work-thumb--groundup { background: linear-gradient(135deg, #2a1a0c, #3d4a30); }
+.work-thumb--mermaid { background: linear-gradient(135deg, #0f0e0c, #5c4638); }
+
+.work-thumb-label {
+  color: #fff;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.work-card:hover .work-thumb-label,
+.work-card:focus-visible .work-thumb-label {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .work-card:hover .work-thumb,
@@ -274,6 +299,7 @@ button:focus-visible {
   .cta,
   .work-card,
   .work-thumb,
+  .work-thumb-label,
   .site-header nav a,
   .site-header nav a::after,
   .social-links a {
