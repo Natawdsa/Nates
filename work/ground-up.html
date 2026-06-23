@@ -506,6 +506,10 @@
 </head>
 <body>
 
+<div id="concept-banner" style="position:fixed;top:0;left:0;right:0;z-index:10000;background:#161412;color:#f5efe4;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:.78rem;letter-spacing:.02em;text-align:center;padding:.6rem 1rem;">
+  Concept redesign by Nathan Paine — a personal design exercise, not commissioned by, affiliated with, or endorsed by the real Ground Up coffee shop.
+</div>
+
 <!-- NAV -->
 <nav id="nav">
   <a href="#hero" class="nav-logo"><b>Ground</b> Up</a>
@@ -839,6 +843,12 @@
   hamBtn.addEventListener('click', open);
   mobClose.addEventListener('click', close);
   mob.querySelectorAll('.mob-l').forEach(l => l.addEventListener('click', close));
+
+  // Offset fixed nav below the concept-disclaimer banner
+  (function () {
+    const banner = document.getElementById('concept-banner');
+    if (banner && nav) nav.style.top = banner.offsetHeight + 'px';
+  })();
 
   // Reveal
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

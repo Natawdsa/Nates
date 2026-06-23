@@ -120,6 +120,10 @@
 
 <body class="font-sans antialiased">
 
+  <div id="concept-banner" style="position:fixed;top:0;left:0;right:0;z-index:10000;background:#161412;color:#f5efe4;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:.78rem;letter-spacing:.02em;text-align:center;padding:.6rem 1rem;">
+    Concept redesign by Nathan Paine — a personal design exercise, not commissioned by, affiliated with, or endorsed by the real Landgate Bistro.
+  </div>
+
   <!-- ─── NAV ─── -->
   <nav class="fixed top-0 left-0 right-0 z-50 bg-stone-950/90 backdrop-blur-sm" role="navigation" aria-label="Main navigation">
     <div class="max-w-7xl mx-auto px-8 md:px-14 h-14 flex items-center justify-between">
@@ -639,6 +643,13 @@
         document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
       });
     });
+
+    // Offset fixed nav below the concept-disclaimer banner
+    (function () {
+      const banner = document.getElementById('concept-banner');
+      const navEl = document.querySelector('nav');
+      if (banner && navEl) navEl.style.top = banner.offsetHeight + 'px';
+    })();
 
     // Scroll reveal
     const io = new IntersectionObserver(

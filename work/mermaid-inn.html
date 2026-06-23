@@ -382,6 +382,10 @@ footer h4 { font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
 </head>
 <body>
 
+<div id="concept-banner" style="position:fixed;top:0;left:0;right:0;z-index:10000;background:#161412;color:#f5efe4;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;font-size:.78rem;letter-spacing:.02em;text-align:center;padding:.6rem 1rem;">
+  Concept redesign by Nathan Paine — a personal design exercise, not commissioned by, affiliated with, or endorsed by the real Mermaid Inn.
+</div>
+
 <!-- NAV -->
 <nav>
   <a href="#top" class="nav-brand">The Mermaid <span>Inn</span></a>
@@ -637,6 +641,15 @@ footer h4 { font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
     <p>Mermaid Street · Rye · East Sussex · TN31 7EY</p>
   </div>
 </footer>
+
+<script>
+  // Offset fixed nav below the concept-disclaimer banner
+  (function () {
+    const banner = document.getElementById('concept-banner');
+    const navEl = document.querySelector('nav');
+    if (banner && navEl) navEl.style.top = banner.offsetHeight + 'px';
+  })();
+</script>
 
 </body>
 </html>
